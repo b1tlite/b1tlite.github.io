@@ -1,9 +1,7 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
-import Moralis from 'moralis/types'
+// import Moralis from 'moralis/types'
 import Moralis from 'moralis/dist/moralis.min.js'
 async function login() {
-  // let user = await Moralis.authenticate()
-  // console.log('logged in user:', user)
   if (!Moralis.isWeb3Enabled()) {
     console.log('Connecting')
     await Moralis.enableWeb3()
@@ -23,9 +21,9 @@ function isAlreadyConnected() {
   })
 }
 function checkIfAlreadyConnected() {
-  isAlreadyConnected().then(
-    (isConnected) => isConnected && Moralis.enableWeb3()
-  )
+  isAlreadyConnected().then((isConnected) => {
+    if (isConnected) return Moralis.enableWeb3()
+  })
 }
 async function logOut() {
   await Moralis.User.logOut()
