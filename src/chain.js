@@ -35,8 +35,8 @@ function prepareGrid() {
   const mockItem = document.getElementById('nft-item-moc')
   // clear exact column classes
   const firstClass = mokItem.classList[0]
-  mokItem.classList.remove(...mokItem.classList)
-  mokItem.classList.add(firstClass)
+  mockItem.classList.remove(...mockItem.classList)
+  mockItem.classList.add(firstClass)
   // clear grid
   grid.innerHTML = ''
   return { grid, mockItem }
@@ -57,7 +57,7 @@ function loadNfts() {
     .then((marketplace) => marketplace.getActiveListings())
     .then((listings) => {
       console.log('Current listings', listings)
-      displayNfts(listings, grid, mocItem)
+      displayNfts(listings, grid, mockItem)
     })
     .catch(console.error)
 }
