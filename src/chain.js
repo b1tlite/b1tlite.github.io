@@ -46,13 +46,13 @@ function loadNfts() {
 
 function getSdk() {
   return new Promise((res, rej) => {
-    if (thirwebSdk) {
-      res(thirwebSdk)
+    if (window.thirwebSdk) {
+      res(window.thirwebSdk)
     } else {
       getProvider()
         .then((provider) => {
-          thirwebSdk = new ThirdwebSDK(provider)
-          res(thirwebSdk)
+          window.thirwebSdk = new ThirdwebSDK(provider)
+          res(window.thirwebSdk)
         })
         .catch(rej)
     }
@@ -61,13 +61,13 @@ function getSdk() {
 
 function getProvider() {
   return new Promise((res, rej) => {
-    if (provider) {
-      res(provider)
+    if (window.provider) {
+      res(window.provider)
     } else {
       Moralis.enableWeb3()
         .then((result) => {
-          provider = result
-          res(provider)
+          window.provider = result
+          res(window.provider)
         })
         .catch(rej)
     }
