@@ -2,6 +2,7 @@ import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 import Moralis from 'moralis/dist/moralis.min.js'
 
 async function login() {
+  initializeMoralis()
   let user = await Moralis.authenticate()
   console.log('logged in user:', user)
 }
@@ -14,7 +15,7 @@ async function logOut() {
 export async function init() {
   initializeMoralis()
   bindActions()
-  loadNfts()
+  // loadNfts()
 }
 
 function initializeMoralis() {
@@ -59,17 +60,13 @@ function loadNfts() {
     .catch(console.error)
 }
 
-function getSdk() {
+function getSdk(provider) {
   return new Promise((res, rej) => {
     if (window.thirwebSdk) {
       res(window.thirwebSdk)
     } else {
-      getProvider()
-        .then((provider) => {
-          window.thirwebSdk = new ThirdwebSDK(provider)
-          res(window.thirwebSdk)
-        })
-        .catch(rej)
+      window.thirwebSdk = new ThirdwebSDK(provider)
+      res(window.thirwebSdk)
     }
   })
 }
