@@ -46,7 +46,7 @@ function displayNfts(nfts) {
     const { asset, quantity, buyoutCurrencyValuePerToken } = nft
     const { name, description, image, properties } = asset
 
-    const item = mokItem.cloneNode()
+    const item = mokItem.cloneNode(true)
     const img = item.querySelector('img')
     const head = item.querySelector('h3')
     const desc = item.querySelector('.paragraph-light')
@@ -58,6 +58,7 @@ function displayNfts(nfts) {
     grid.appendChild(item)
   })
 }
+
 
 // description: "Monetize personal data to earn passive income with SoT-Income Inc. \nSystem on tooth(SoT) is an autonomus computer embedded within a tooth, which uses Bluetooth, sensors and wireless power transfer to allow wireless communication. On the SoT are integrated microphone and bone conduction module that allow for two-way communication, as well as sensors that detect activities such as chewing, drinking, speaking, coughing, what food is eaten, and how often the user brushes his/her teeth."
 // id: BigNumber {_hex: '0x0e', _isBigNumber: true}
