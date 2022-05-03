@@ -25,10 +25,10 @@ export function connect() {
     console.log('logged in user:', user)
   }
 
-  async function logOut() {
-    await Moralis.User.logOut()
-    console.log('logged out')
-  }
+  // async function logOut() {
+  //   await Moralis.User.logOut()
+  //   console.log('logged out')
+  // }
   //const web3Provider = await Moralis.enableWeb3();
   const provider = ethers.Wallet.createRandom()
   const sdk = new ThirdwebSDK(provider)
