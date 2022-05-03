@@ -35,6 +35,7 @@ export function connect() {
   const marketplace = sdk.getMarketplace(
     '0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9'
   )
+  console.log('bbbbbbbb');
   marketplace.getActiveListings().then((listings) => {
     console.log('Current listings', listings)
   })
