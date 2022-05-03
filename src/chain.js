@@ -77,14 +77,19 @@ function getProvider() {
 function displayNfts(nfts) {
   const grid = document.getElementById('nft-grid')
   const mokItem = document.getElementById('nft-item-moc')
+  // clear exact column classes
+  const firstClass = item.classList[0]
+  item.classList.remove(...item.classList)
+  item.classList.add(firstClass)
   grid.innerHTML = ''
 
-  nfts.forEach((nft) => {
+  nfts.forEach((nft, index) => {
     const { asset, quantity, buyoutCurrencyValuePerToken } = nft
     const { name, description, image, properties } = asset
 
     const item = mokItem.cloneNode(true)
     item.display = 'block'
+    item.id = `nft-${index}`
     const img = item.querySelector('img')
     const head = item.querySelector('h3')
     const desc = item.querySelector('.paragraph-light')
