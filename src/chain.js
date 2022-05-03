@@ -31,18 +31,15 @@ function bindActions() {
 }
 
 function loadNfts() {
-  getSdk(provider)
-    .then((sdk) => {
-      const marketplace = sdk.getMarketplace(
-        '0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9'
-      )
-      marketplace
-        .getActiveListings()
-        .then((listings) => {
-          console.log('Current listings', listings)
-          displayNfts(listings)
-        })
-        .catch(console.error)
+  getProvider()
+    .then((provider) => getSdk(provider))
+    .then((sdk) =>
+      sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
+    )
+    .then((marketplace) => marketplace.getActiveListings())
+    .then((listings) => {
+      console.log('Current listings', listings)
+      displayNfts(listings)
     })
     .catch(console.error)
 }
@@ -54,7 +51,8 @@ function getSdk() {
     } else {
       getProvider()
         .then((provider) => {
-          res(new ThirdwebSDK(provider))
+          thirwebSdk = new ThirdwebSDK(provider)
+          res(thirwebSdk)
         })
         .catch(rej)
     }
@@ -66,7 +64,12 @@ function getProvider() {
     if (provider) {
       res(provider)
     } else {
-      Moralis.enableWeb3().then(res).catch(rej)
+      Moralis.enableWeb3()
+        .then((result) => {
+          provider = result
+          res(provider)
+        })
+        .catch(rej)
     }
   })
 }
