@@ -10,9 +10,16 @@ async function login() {
     console.log('Already connected')
   }
 }
+function onMetamuskNotInstalled() {}
+
 function isAlreadyConnected() {
   return new Promise((res, rej) => {
-    Moralis.web3Library
+    if (!window.ethereum) {
+      console.error('Install metamusk!')
+      onMetamuskNotInstalled && onMetamuskNotInstalled()
+      res()
+    }
+    window.ethereum
       .request({ method: 'eth_accounts' })
       .then((accounts) => {
         res(accounts.length === 0)
