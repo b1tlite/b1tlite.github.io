@@ -30,7 +30,25 @@ function bindActions() {
   document.getElementById('connect').onclick = login
 }
 
+function prepareGrid() {
+  const grid = document.getElementById('nft-grid')
+  const mockItem = document.getElementById('nft-item-moc')
+  // clear exact column classes
+  const firstClass = mokItem.classList[0]
+  mokItem.classList.remove(...mokItem.classList)
+  mokItem.classList.add(firstClass)
+  // clear grid
+  grid.innerHTML = ''
+  return { grid, mockItem }
+}
+
 function loadNfts() {
+  // get moc item
+  // remove it from from gid
+  // display loader ??
+  // prepare moc
+  const { grid, mockItem } = prepareGrid()
+
   getProvider()
     .then((provider) => getSdk(provider))
     .then((sdk) =>
@@ -39,7 +57,7 @@ function loadNfts() {
     .then((marketplace) => marketplace.getActiveListings())
     .then((listings) => {
       console.log('Current listings', listings)
-      displayNfts(listings)
+      displayNfts(listings, grid, mocItem)
     })
     .catch(console.error)
 }
@@ -74,20 +92,12 @@ function getProvider() {
   })
 }
 
-function displayNfts(nfts) {
-  const grid = document.getElementById('nft-grid')
-  const mokItem = document.getElementById('nft-item-moc')
-  // clear exact column classes
-  const firstClass = item.classList[0]
-  item.classList.remove(...item.classList)
-  item.classList.add(firstClass)
-  grid.innerHTML = ''
-
-  nfts.forEach((nft, index) => {
+function displayNfts(nfts, grid, mockItem) {
+  const nodes = nfts.map((nft, index) => {
     const { asset, quantity, buyoutCurrencyValuePerToken } = nft
     const { name, description, image, properties } = asset
 
-    const item = mokItem.cloneNode(true)
+    const item = mockItem.cloneNode(true)
     item.display = 'block'
     item.id = `nft-${index}`
     const img = item.querySelector('img')
@@ -98,8 +108,9 @@ function displayNfts(nfts) {
     desc.innerHTML = `${description} ${quantity} ${Object.values(
       properties
     ).join(', ')}`
-    grid.appendChild(item)
+    return item
   })
+  grid.append(...nodes)
 }
 
 // description: "Monetize personal data to earn passive income with SoT-Income Inc. \nSystem on tooth(SoT) is an autonomus computer embedded within a tooth, which uses Bluetooth, sensors and wireless power transfer to allow wireless communication. On the SoT are integrated microphone and bone conduction module that allow for two-way communication, as well as sensors that detect activities such as chewing, drinking, speaking, coughing, what food is eaten, and how often the user brushes his/her teeth."
