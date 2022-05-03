@@ -1,38 +1,38 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 import Moralis from 'moralis/dist/moralis.min.js'
 
-export function connect() {
+async function login() {
+  console.error('gggggg')
+  let user = Moralis.User.current()
+  if (!user) {
+    user = await Moralis.authenticate()
+  }
+  console.log('logged in user:', user)
+}
+
+async function logOut() {
+  await Moralis.User.logOut()
+  console.log('logged out')
+}
+
+export async function init() {
   const serverUrl = 'https://6hiqo5aptzjt.usemoralis.com:2053/server' //Server url from moralis.io
   const appId = '4tLI25e1VFuYR6InpKuVqIp4T6zXSa8pHmrh0BBz' // Application id from moralis.io
   Moralis.start({ serverUrl, appId })
-  console.error('aaaaaaa')
   // add from here down
-  async function login() {
-    console.error('gggggg')
-    let user = Moralis.User.current()
-    if (!user) {
-      user = await Moralis.authenticate()
-    }
-    console.log('logged in user:', user)
-    const provider = await Moralis.enableWeb3()
-    const sdk = new ThirdwebSDK(provider)
-    const marketplace = sdk.getMarketplace(
-      '0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9'
-    )
-    console.log('bbbbbbbb')
-    marketplace
-      .getActiveListings()
-      .then((listings) => {
-        console.log('Current listings', listings)
-        displayNfts(listings)
-      })
-      .catch(console.error)
-  }
 
-  // async function logOut() {
-  //   await Moralis.User.logOut()
-  //   console.log('logged out')
-  // }
+  const provider = await Moralis.enableWeb3()
+  const sdk = new ThirdwebSDK(provider)
+  const marketplace = sdk.getMarketplace(
+    '0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9'
+  )
+  marketplace
+    .getActiveListings()
+    .then((listings) => {
+      console.log('Current listings', listings)
+      displayNfts(listings)
+    })
+    .catch(console.error)
 
   document.getElementById('connect').onclick = login
 }
@@ -47,6 +47,7 @@ function displayNfts(nfts) {
     const { name, description, image, properties } = asset
 
     const item = mokItem.cloneNode(true)
+    item.display = 'block'
     const img = item.querySelector('img')
     const head = item.querySelector('h3')
     const desc = item.querySelector('.paragraph-light')
@@ -58,7 +59,6 @@ function displayNfts(nfts) {
     grid.appendChild(item)
   })
 }
-
 
 // description: "Monetize personal data to earn passive income with SoT-Income Inc. \nSystem on tooth(SoT) is an autonomus computer embedded within a tooth, which uses Bluetooth, sensors and wireless power transfer to allow wireless communication. On the SoT are integrated microphone and bone conduction module that allow for two-way communication, as well as sensors that detect activities such as chewing, drinking, speaking, coughing, what food is eaten, and how often the user brushes his/her teeth."
 // id: BigNumber {_hex: '0x0e', _isBigNumber: true}
