@@ -15,5 +15,10 @@
     "babel-loader": "^8.2.5",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "@thirdweb-dev/sdk": "^2.1.6",
+    "ethers": "^5.6.5",
+    "moralis": "^1.6.0"
   }
 }
