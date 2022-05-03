@@ -1,8 +1,7 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
-// import Moralis from 'moralis/types'
+import Moralis from 'moralis/types'
 import Moralis from 'moralis/dist/moralis.min.js'
 async function login() {
-  initializeMoralis()
   // let user = await Moralis.authenticate()
   // console.log('logged in user:', user)
   if (!Moralis.isWeb3Enabled()) {
@@ -13,7 +12,21 @@ async function login() {
     console.log('Already connected')
   }
 }
-
+function isAlreadyConnected() {
+  return new Promise((res, rej) => {
+    Moralis.web3Library
+      .request({ method: 'eth_accounts' })
+      .then((accounts) => {
+        res(accounts.length === 0)
+      })
+      .catch(rej)
+  })
+}
+function checkIfAlreadyConnected() {
+  isAlreadyConnected().then(
+    (isConnected) => isConnected && Moralis.enableWeb3()
+  )
+}
 async function logOut() {
   await Moralis.User.logOut()
   console.log('logged out')
@@ -22,6 +35,7 @@ async function logOut() {
 export async function init() {
   initializeMoralis()
   bindActions()
+  checkIfAlreadyConnected()
   // loadNfts()
 }
 
