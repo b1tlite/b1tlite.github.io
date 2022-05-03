@@ -1,5 +1,5 @@
 import capital from './capital'
 import addDOMContent from './addDOMContent'
-import { init } from './chain'
+import { init, loadNfts } from './chain'
 
-export { capital, addDOMContent, init }
+export { capital, addDOMContent, init, loadNfts }

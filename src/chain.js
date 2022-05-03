@@ -40,7 +40,7 @@ function prepareGrid() {
   return { grid, mockItem }
 }
 
-function loadNfts() {
+export function loadNfts() {
   // get moc item
   // remove it from from gid
   // display loader ??
