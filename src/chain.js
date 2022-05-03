@@ -2,10 +2,7 @@ import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 import Moralis from 'moralis/dist/moralis.min.js'
 
 async function login() {
-  let user = Moralis.User.current()
-  if (!user) {
-    user = await Moralis.authenticate()
-  }
+  let user = await Moralis.authenticate()
   console.log('logged in user:', user)
 }
 
