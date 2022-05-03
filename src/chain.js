@@ -34,7 +34,7 @@ function prepareGrid() {
   const grid = document.getElementById('nft-grid')
   const mockItem = document.getElementById('nft-item-moc')
   // clear exact column classes
-  const firstClass = mokItem.classList[0]
+  const firstClass = mockItem.classList[0]
   mockItem.classList.remove(...mockItem.classList)
   mockItem.classList.add(firstClass)
   // clear grid
