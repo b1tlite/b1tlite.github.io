@@ -1,6 +1,6 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
-import Moralis from 'moralis/types'
-// import Moralis from 'moralis/dist/moralis.min.js'
+// import Moralis from 'moralis/types'
+import Moralis from 'moralis/dist/moralis.min.js'
 async function login() {
   initializeMoralis()
   // let user = await Moralis.authenticate()
