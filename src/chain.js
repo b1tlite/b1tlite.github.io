@@ -51,7 +51,20 @@ function initializeMoralis() {
 }
 
 function bindActions() {
-  document.getElementById('connect').onclick = login
+  const connectButton = document.getElementById('connect')
+  connectButton.onclick = login
+
+  // Subscribe to onWeb3Enabled events
+  const unsubscribe = Moralis.onWeb3Enabled(({ account }) => {
+    connectButton.disabled = true
+    connectButton.innerHTML = `Connected as ${account}`
+    console.log(result)
+  })
+  const unsubscribe2 = Moralis.onWeb3Deactivated((result) => {
+    connectButton.disabled = false
+    connectButton.innerHTML = 'Connect'
+    console.log(result)
+  })
 }
 
 function prepareGrid() {
@@ -73,7 +86,7 @@ export function loadNfts() {
   // prepare moc
   const { grid, mockItem } = prepareGrid()
 
-  getProvider()
+  getProvider(true) // readonly provider
     .then((provider) => getSdk(provider))
     .then((sdk) =>
       sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
@@ -88,26 +101,29 @@ export function loadNfts() {
 
 function getSdk(provider) {
   return new Promise((res, rej) => {
-    if (window.thirwebSdk) {
-      res(window.thirwebSdk)
-    } else {
-      window.thirwebSdk = new ThirdwebSDK(provider)
-      res(window.thirwebSdk)
-    }
+    res(new ThirdwebSDK(provider))
   })
 }
 
-function getProvider() {
+function getProvider(isReadOnly = false) {
   return new Promise((res, rej) => {
     if (window.provider) {
       res(window.provider)
     } else {
-      Moralis.enableWeb3()
-        .then((result) => {
-          window.provider = result
-          res(window.provider)
-        })
-        .catch(rej)
+      if (isReadOnly) {
+        const NODE_URL =
+          'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
+        // not save readonly provider to window
+        res(new ethers.providers.JsonRpcProvider(NODE_URL))
+      } else {
+        // signer
+        Moralis.enableWeb3()
+          .then((result) => {
+            window.provider = result
+            res(window.provider)
+          })
+          .catch(rej)
+      }
     }
   })
 }
