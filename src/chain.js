@@ -82,6 +82,10 @@ function prepareGrid() {
   return { grid, mockItem }
 }
 
+function getMarketPlace(sdk) {
+  return sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
+}
+
 export function loadNfts() {
   // get moc item
   // remove it from from gid
@@ -90,12 +94,10 @@ export function loadNfts() {
   const { grid, mockItem } = prepareGrid()
 
   getProvider(true) // readonly provider
-    .then((provider) => getSdk(provider))
-    .then((sdk) =>
-      sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
-    )
+    .then(getSdk)
+    .then(getMarketPlace)
     .then((marketplace) => marketplace.getActiveListings())
-    .then(listings => listings.filter((el) => el.quantity.toNumber() > 0))
+    .then((listings) => listings.filter((el) => el.quantity.toNumber() > 0))
     .then((listings) => {
       console.log('Current listings', listings)
       displayNfts(listings, grid, mockItem)
@@ -111,23 +113,13 @@ function getSdk(provider) {
 
 function getProvider(isReadOnly = false) {
   return new Promise((res, rej) => {
-    if (window.provider) {
-      res(window.provider)
+    if (isReadOnly) {
+      const NODE_URL =
+        'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
+      res(new ethers.providers.JsonRpcProvider(NODE_URL))
     } else {
-      if (isReadOnly) {
-        const NODE_URL =
-          'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
-        // not save readonly provider to window
-        res(new ethers.providers.JsonRpcProvider(NODE_URL))
-      } else {
-        // signer
-        Moralis.enableWeb3()
-          .then((result) => {
-            window.provider = result
-            res(window.provider)
-          })
-          .catch(rej)
-      }
+      // signer
+      Moralis.enableWeb3().then(res).catch(rej)
     }
   })
 }
