@@ -1,6 +1,8 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
+import { ethers } from 'ethers'
 // import Moralis from 'moralis/types'
 import Moralis from 'moralis/dist/moralis.min.js'
+
 async function login() {
   if (!Moralis.isWeb3Enabled()) {
     console.log('Connecting')
