@@ -41,7 +41,7 @@ export async function init() {
   initializeMoralis()
   bindActions()
   checkIfAlreadyConnected()
-  // loadNfts()
+  loadNfts()
 }
 
 function initializeMoralis() {
