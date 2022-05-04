@@ -107,7 +107,7 @@ export function loadNfts() {
 
 function getSdk(provider) {
   return new Promise((res, rej) => {
-    res(new ThirdwebSDK(provider))
+    res(new ThirdwebSDK(provider.getSigner() || provider))
   })
 }
 
