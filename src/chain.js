@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 // import Moralis from 'moralis/types'
 import Moralis from 'moralis/dist/moralis.min.js'
 
-async function login() {
+async function enableWeb3() {
   if (!Moralis.isWeb3Enabled()) {
     console.log('Connecting')
     await Moralis.enableWeb3()
@@ -34,8 +34,8 @@ function checkIfAlreadyConnected() {
     if (isConnected) return Moralis.enableWeb3()
   })
 }
-async function logOut() {
-  await Moralis.User.logOut()
+async function disableWeb3() {
+  await Moralis.deactivateWeb3()
   console.log('logged out')
 }
 
@@ -54,17 +54,18 @@ function initializeMoralis() {
 
 function bindActions() {
   const connectButton = document.getElementById('connect')
-  connectButton.onclick = login
+  connectButton.onclick = enableWeb3
 
   // Subscribe to onWeb3Enabled events
-  const unsubscribe = Moralis.onWeb3Enabled(({ account }) => {
-    connectButton.disabled = true
+  const unsubscribe = Moralis.onWeb3Enabled((result) => {
+    const { account } = result
     connectButton.innerHTML = `Connected as ${account}`
+    connectButton.onclick = disableWeb3
     console.log(result)
   })
   const unsubscribe2 = Moralis.onWeb3Deactivated((result) => {
-    connectButton.disabled = false
     connectButton.innerHTML = 'Connect'
+    connectButton.onclick = enableWeb3
     console.log(result)
   })
 }
@@ -94,6 +95,7 @@ export function loadNfts() {
       sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
     )
     .then((marketplace) => marketplace.getActiveListings())
+    .then(listings => listings.filter((el) => el.quantity.toNumber() > 0))
     .then((listings) => {
       console.log('Current listings', listings)
       displayNfts(listings, grid, mockItem)
@@ -132,15 +134,28 @@ function getProvider(isReadOnly = false) {
 
 function displayNfts(nfts, grid, mockItem) {
   const nodes = nfts.map((nft, index) => {
-    const { asset, quantity, buyoutCurrencyValuePerToken } = nft
+    const { asset, quantity, buyoutCurrencyValuePerToken, id: listingId } = nft
     const { name, description, image, properties } = asset
 
     const item = mockItem.cloneNode(true)
     item.display = 'block'
     item.id = `nft-${index}`
+    item.setAttribute('listing-id', listingId)
+    item.setAttribute('asset-max-quantity', quantity.toNumber())
+
     const img = item.querySelector('img')
     const head = item.querySelector('h3')
     const desc = item.querySelector('.paragraph-light')
+    const buyBtn = item.querySelector('#buy-btn')
+    buyBtn.onclick = (e) => {
+      e.preventDefault()
+      getProvider()
+        .then(getSdk)
+        .then(getMarketplace)
+        .then((marketplace) => marketplace.direct.buyoutListing(listingId, 1))
+        .catch(console.error)
+        .then(loadNfts)
+    }
     img.src = image
     head.innerHTML = name
     desc.innerHTML = `${description} ${quantity} ${Object.values(
