@@ -82,7 +82,7 @@ function prepareGrid() {
   return { grid, mockItem }
 }
 
-function getMarketPlace(sdk) {
+function getMarketplace(sdk) {
   return sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
 }
 
@@ -95,7 +95,7 @@ export function loadNfts() {
 
   getProvider(true) // readonly provider
     .then(getSdk)
-    .then(getMarketPlace)
+    .then(getMarketplace)
     .then((marketplace) => marketplace.getActiveListings())
     .then((listings) => listings.filter((el) => el.quantity.toNumber() > 0))
     .then((listings) => {
