@@ -101,6 +101,7 @@ function handleBuyClick(e, listingId, quntity = 1) {
     .catch(console.error)
     .then(loadNfts)
     .then(() => setButtonsLoading(false))
+    .catch(console.error)
 }
 
 function addNftsToGrid(nfts, grid, mockItem) {

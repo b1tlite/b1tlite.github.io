@@ -13,18 +13,16 @@ export async function enableWeb3() {
   }
 }
 function isAlreadyConnected() {
-  return new Promise((res, rej) => {
-    if (!window.ethereum) {
-      console.error('Install metamusk!')
-      onMetamuskNotInstalled && onMetamuskNotInstalled()
-      res()
-    }
-    window.ethereum
+  if (window.ethereum) {
+    return window.ethereum
       .request({ method: 'eth_accounts' })
-      .then((accounts) => {
-        res(accounts.length === 0)
-      })
-      .catch(rej)
+      .then((accounts) => accounts.length === 0)
+  }
+
+  return new Promise((res, rej) => {
+    console.error('Metamusk not installed!')
+    onMetamuskNotInstalled && onMetamuskNotInstalled()
+    res()
   })
 }
 export function checkIfAlreadyConnected() {
@@ -45,42 +43,30 @@ function getMarketplace(sdk) {
   return sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
 }
 export function getNfts() {
-  return new Promise((res, rej) => {
-    getProvider(true) // readonly provider
-      .then(getSdk)
-      .then(getMarketplace)
-      .then((marketplace) => marketplace.getActiveListings())
-      .then((listings) => listings.filter((el) => el.quantity.toNumber() > 0))
-      .then(res)
-      .catch(rej)
-  })
+  return getProvider(true) // readonly provider
+    .then(getSdk)
+    .then(getMarketplace)
+    .then((marketplace) => marketplace.getActiveListings())
+    .then((listings) => listings.filter((el) => el.quantity.toNumber() > 0))
 }
 function getSdk(provider) {
-  return new Promise((res, rej) => {
-    res(new ThirdwebSDK(provider.getSigner() || provider))
-  })
+  return new ThirdwebSDK(provider.getSigner() || provider)
 }
 function getProvider(isReadOnly = false) {
+  if (!isReadOnly) return Moralis.enableWeb3()
+
   return new Promise((res, rej) => {
-    if (isReadOnly) {
-      const NODE_URL =
-        'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
-      res(new ethers.providers.JsonRpcProvider(NODE_URL))
-    } else {
-      // signer
-      Moralis.enableWeb3().then(res).catch(rej)
-    }
+    const NODE_URL =
+      'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
+    res(new ethers.providers.JsonRpcProvider(NODE_URL))
   })
 }
 export function buyNft(listingId, quantity = 1) {
-  return new Promise((res, rej) => {
-    getProvider()
-      .then(getSdk)
-      .then(getMarketplace)
-      .then((marketplace) =>
-        marketplace.direct.buyoutListing(listingId, quantity)
-      )
-      .then(res)
-      .catch(rej)
-  })
+  console.log('Trying to buy:', listingId, quantity)
+  return getProvider()
+    .then(getSdk)
+    .then(getMarketplace)
+    .then((marketplace) =>
+      marketplace.direct.buyoutListing(listingId, quantity)
+    )
 }
