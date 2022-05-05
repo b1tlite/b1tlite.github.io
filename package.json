@@ -17,7 +17,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@thirdweb-dev/sdk": "^2.1.6",
+    "@thirdweb-dev/sdk": "^2.2.2",
     "ethers": "^5.6.5",
     "moralis": "^1.6.0"
   }
