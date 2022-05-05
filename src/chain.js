@@ -1,57 +1,18 @@
-import { ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { ethers } from 'ethers'
 // import Moralis from 'moralis/types'
 import Moralis from 'moralis/dist/moralis.min.js'
+import {
+  initializeMoralis,
+  checkIfAlreadyConnected,
+  enableWeb3,
+  disableWeb3,
+  getNfts,
+  buyNft,
+} from './web3Api'
 
-async function enableWeb3() {
-  if (!Moralis.isWeb3Enabled()) {
-    console.log('Connecting')
-    await Moralis.enableWeb3()
-    console.log('Connected')
-  } else {
-    console.log('Already connected')
-  }
-}
-function onMetamuskNotInstalled() {}
-
-function isAlreadyConnected() {
-  return new Promise((res, rej) => {
-    if (!window.ethereum) {
-      console.error('Install metamusk!')
-      onMetamuskNotInstalled && onMetamuskNotInstalled()
-      res()
-    }
-    window.ethereum
-      .request({ method: 'eth_accounts' })
-      .then((accounts) => {
-        res(accounts.length === 0)
-      })
-      .catch(rej)
-  })
-}
-function checkIfAlreadyConnected() {
-  isAlreadyConnected().then((isConnected) => {
-    if (isConnected) return Moralis.enableWeb3()
-  })
-}
-async function disableWeb3() {
-  await Moralis.deactivateWeb3()
-  console.log('logged out')
-}
-
-export async function init() {
-  initializeMoralis()
-  bindActions()
-  checkIfAlreadyConnected()
-  loadNfts()
-}
-
-function initializeMoralis() {
-  const serverUrl = 'https://6hiqo5aptzjt.usemoralis.com:2053/server' //Server url from moralis.io
-  const appId = '4tLI25e1VFuYR6InpKuVqIp4T6zXSa8pHmrh0BBz' // Application id from moralis.io
-  Moralis.start({ serverUrl, appId })
-}
-
+export function onMetamuskNotInstalled() {}
+function hideLoader() {}
+function showGrid() {}
+function setButtonsLoading(state = true) {}
 function bindActions() {
   const connectButton = document.getElementById('connect')
   connectButton.onclick = enableWeb3
@@ -72,18 +33,48 @@ function bindActions() {
 
 function prepareGrid() {
   const grid = document.getElementById('nft-grid')
-  const mockItem = document.getElementById('nft-item-moc')
+  const mockItem = window.mockNftItem || document.getElementById('nft-item-moc')
+  window.mockNftItem = mockItem
   // clear exact column classes
   const firstClass = mockItem.classList[0]
   mockItem.classList.remove(...mockItem.classList)
   mockItem.classList.add(firstClass)
   // clear grid
   grid.innerHTML = ''
+  // mockItem.display = 'none'
   return { grid, mockItem }
 }
 
-function getMarketplace(sdk) {
-  return sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
+function prepareNftItemElement(nft, mockItem, index) {
+  const { asset, quantity, buyoutCurrencyValuePerToken, id: listingId } = nft
+  const { name, description, image, properties } = asset
+
+  const item = mockItem.cloneNode(true)
+  item.display = 'block'
+  item.id = `nft-${index}`
+  item.setAttribute('listing-id', listingId)
+  item.setAttribute('asset-max-quantity', quantity.toNumber())
+
+  const img = item.querySelector('img')
+  const head = item.querySelector('h3')
+  const desc = item.querySelector('.paragraph-light')
+  const buyBtn = item.querySelector('#buy-btn')
+  buyBtn.onclick = (e) => {
+    handleBuyClick(e, listingId, 1)
+  }
+  img.src = image
+  head.innerHTML = name
+  desc.innerHTML = `${description} ${quantity} ${Object.values(properties).join(
+    ', '
+  )}`
+  return item
+}
+
+export async function init() {
+  initializeMoralis()
+  bindActions()
+  checkIfAlreadyConnected()
+  loadNfts()
 }
 
 export function loadNfts() {
@@ -93,68 +84,29 @@ export function loadNfts() {
   // prepare moc
   const { grid, mockItem } = prepareGrid()
 
-  getProvider(true) // readonly provider
-    .then(getSdk)
-    .then(getMarketplace)
-    .then((marketplace) => marketplace.getActiveListings())
-    .then((listings) => listings.filter((el) => el.quantity.toNumber() > 0))
+  getNfts()
     .then((listings) => {
       console.log('Current listings', listings)
-      displayNfts(listings, grid, mockItem)
+      addNftsToGrid(listings, grid, mockItem)
     })
+    .then(hideLoader)
+    .then(showGrid)
     .catch(console.error)
 }
 
-function getSdk(provider) {
-  return new Promise((res, rej) => {
-    res(new ThirdwebSDK(provider.getSigner() || provider))
-  })
+function handleBuyClick(e, listingId, quntity = 1) {
+  e.preventDefault()
+  setButtonsLoading(true)
+  buyNft(listingId, quntity)
+    .catch(console.error)
+    .then(loadNfts)
+    .then(() => setButtonsLoading(false))
 }
 
-function getProvider(isReadOnly = false) {
-  return new Promise((res, rej) => {
-    if (isReadOnly) {
-      const NODE_URL =
-        'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
-      res(new ethers.providers.JsonRpcProvider(NODE_URL))
-    } else {
-      // signer
-      Moralis.enableWeb3().then(res).catch(rej)
-    }
-  })
-}
-
-function displayNfts(nfts, grid, mockItem) {
-  const nodes = nfts.map((nft, index) => {
-    const { asset, quantity, buyoutCurrencyValuePerToken, id: listingId } = nft
-    const { name, description, image, properties } = asset
-
-    const item = mockItem.cloneNode(true)
-    item.display = 'block'
-    item.id = `nft-${index}`
-    item.setAttribute('listing-id', listingId)
-    item.setAttribute('asset-max-quantity', quantity.toNumber())
-
-    const img = item.querySelector('img')
-    const head = item.querySelector('h3')
-    const desc = item.querySelector('.paragraph-light')
-    const buyBtn = item.querySelector('#buy-btn')
-    buyBtn.onclick = (e) => {
-      e.preventDefault()
-      getProvider()
-        .then(getSdk)
-        .then(getMarketplace)
-        .then((marketplace) => marketplace.direct.buyoutListing(listingId, 1))
-        .catch(console.error)
-        .then(loadNfts)
-    }
-    img.src = image
-    head.innerHTML = name
-    desc.innerHTML = `${description} ${quantity} ${Object.values(
-      properties
-    ).join(', ')}`
-    return item
-  })
+function addNftsToGrid(nfts, grid, mockItem) {
+  const nodes = nfts.map((nft, index) =>
+    prepareNftItemElement(nft, mockItem, index)
+  )
   grid.append(...nodes)
 }
 
