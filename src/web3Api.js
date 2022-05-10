@@ -57,7 +57,8 @@ function getProvider(isReadOnly = false) {
 
   return new Promise((res, rej) => {
     const NODE_URL =
-      'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
+      // 'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
+      'https://polygon-mainnet.infura.io/v3/6098af69afc940cd9070ab6d774436ea'
     res(new ethers.providers.JsonRpcProvider(NODE_URL))
   })
 }
