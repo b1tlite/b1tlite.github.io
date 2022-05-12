@@ -1,7 +1,7 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 import { ethers } from 'ethers'
 import Moralis from 'moralis/dist/moralis.min.js'
-import { onMetamuskNotInstalled } from './chain'
+import { onMetamuskNotInstalled } from './ui'
 
 export async function enableWeb3() {
   if (!Moralis.isWeb3Enabled()) {

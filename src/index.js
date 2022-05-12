@@ -1,6 +1,5 @@
-import capital from './capital'
-import addDOMContent from './addDOMContent'
-import { init, loadNfts } from './chain'
+import { init } from './old'
+import { initialize } from './ui'
 import { getNfts } from './web3Api'
 
-export { capital, addDOMContent, init, loadNfts, getNfts }
+export { init, getNfts, initialize }

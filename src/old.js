@@ -77,7 +77,7 @@ export async function init() {
   loadNfts()
 }
 
-export function loadNfts() {
+function loadNfts() {
   // get moc item
   // remove it from from gid
   // display loader ??
