@@ -59,7 +59,14 @@ function prepareNftItemElement(nft, mockItem, index) {
   buyBtn.onclick = (e) => {
     handleBuyClick(e, listingId, 1)
   }
-  img.src = image
+
+  // replace image
+  const newImage = document.createElement('img');
+  newImage.src = image
+  newImage.classList = img.classList
+  img.parentNode.replaceChild(newImage, img);
+
+
   head.innerHTML = `${capitalizeFirstLetter(properties.author || 'Uknown author')}, ${
     properties.age || 'unknown'
   } years old`
