@@ -28,7 +28,7 @@ function addNftsToUI(nfts, uiElements) {
   const nftElements = nfts.map((nft, index) => prepareNftItemElement(nft, item, index))
 
   // clear container
-  container.innerHtml = ''
+  container.innerHTML = ''
 
   const rowsCount = Math.ceil(nftElements.length / ITEMS_PER_ROW)
   for (let rowNumber = 0; rowNumber < rowsCount; rowNumber++) {
@@ -142,16 +142,16 @@ function saveNFTSToStore(nfts) {
 function getUIElements() {
   window.mockElements = window.mockElements || {}
 
-  const container = document.querySelector('.nftgallery')
+  window.mockElements.container = window.mockElements.container || document.querySelector('.nftgallery')
 
   window.mockElements.row =
-    window.mockElements.row || container.querySelector('.galleryrow').cloneNode(true)
-  window.mockElements.row.innerHtml = ''
+    window.mockElements.row || window.mockElements.container.querySelector('.galleryrow').cloneNode(true)
+  window.mockElements.row.innerHTML = ''
 
   window.mockElements.item =
     window.mockElements.item || window.mockElements.row.querySelector('.nftitem').cloneNode(true)
 
-  return { container: container, row: window.mockElements.row, item: window.mockElements.item }
+  return { container: window.mockElements.container, row: window.mockElements.row, item: window.mockElements.item }
 }
 function bindActions() {
   const connectButton = document.querySelector('.connectwalletbutton ')
