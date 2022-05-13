@@ -175,7 +175,8 @@ function bindActions() {
   // Subscribe to onWeb3Enabled events
   const unsubscribe = Moralis.onWeb3Enabled((result) => {
     const { account } = result
-    connectButton.innerHTML = `Connected as ${account}`
+    connectButton.innerHTML = `Disconnect`
+    // connectButton.innerHTML = `Connected as ${account}`
     connectButton.onclick = disableWeb3
     console.log(result)
   })
