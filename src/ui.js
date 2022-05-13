@@ -146,10 +146,12 @@ function getUIElements() {
 
   window.mockElements.row =
     window.mockElements.row || window.mockElements.container.querySelector('.galleryrow').cloneNode(true)
-  window.mockElements.row.innerHTML = ''
 
   window.mockElements.item =
     window.mockElements.item || window.mockElements.row.querySelector('.nftitem').cloneNode(true)
+
+    
+  window.mockElements.row.innerHTML = ''
 
   return { container: window.mockElements.container, row: window.mockElements.row, item: window.mockElements.item }
 }
