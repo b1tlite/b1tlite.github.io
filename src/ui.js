@@ -141,10 +141,16 @@ function saveNFTSToStore(nfts) {
 }
 function getUIElements() {
   window.mockElements = window.mockElements || {}
+
   window.mockElements.container = window.mockElements.container || document.querySelector('.nftgallery')
-  window.mockElements.row = window.mockElements.row || container.querySelector('.galleryrow').cloneNode(true)
+
+  window.mockElements.row =
+    window.mockElements.row || window.mockElements.container.querySelector('.galleryrow').cloneNode(true)
   window.mockElements.row.innerHtml = ''
-  window.mockElements.item = window.mockElements.item || row.querySelector('.nftitem').cloneNode(true)
+
+  window.mockElements.item =
+    window.mockElements.item || window.mockElements.row.querySelector('.nftitem').cloneNode(true)
+    
   return { container: window.mockElements.container, row: window.mockElements.row, item: window.mockElements.item }
 }
 function bindActions() {
