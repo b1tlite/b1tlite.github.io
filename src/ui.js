@@ -67,10 +67,10 @@ function prepareNftItemElement(nft, mockItem, index) {
   img.parentNode.replaceChild(newImage, img);
 
 
-  head.innerHTML = `${capitalizeFirstLetter(properties.author || 'Uknown author')}, ${
+  head.innerHTML = `${capitalizeFirstLetter(properties.author || 'Unknown author')}, ${
     properties.age || 'unknown'
   } years old`
-  location.innerHTML = `${capitalizeFirstLetter(properties.location || properties.city || 'Uknown')}`
+  location.innerHTML = `${capitalizeFirstLetter(properties.location || properties.city || 'Unknown')}`
   // desc.innerHTML = `${description} ${quantity} ${Object.values(properties).join(', ')}`
   return item
 }
