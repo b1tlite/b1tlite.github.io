@@ -60,8 +60,10 @@ function prepareNftItemElement(nft, mockItem, index) {
     handleBuyClick(e, listingId, 1)
   }
   img.src = image
-  head.innerHTML = `${properties.author || 'Uknown author'}, ${properties.age || 'unknown'} years old`
-  location.innerHTML = `${properties.location || properties.city || 'Uknown'}`
+  head.innerHTML = `${capitalizeFirstLetter(properties.author || 'Uknown author')}, ${
+    properties.age || 'unknown'
+  } years old`
+  location.innerHTML = `${capitalizeFirstLetter(properties.location || properties.city || 'Uknown')}`
   // desc.innerHTML = `${description} ${quantity} ${Object.values(properties).join(', ')}`
   return item
 }
@@ -152,7 +154,6 @@ function getUIElements() {
   window.mockElements.item =
     window.mockElements.item || window.mockElements.row.querySelector('.nftitem').cloneNode(true)
 
-
   window.mockElements.row.innerHTML = ''
 
   return { container: window.mockElements.container, row: window.mockElements.row, item: window.mockElements.item }
@@ -177,7 +178,9 @@ function bindActions() {
     console.log(result)
   })
 }
-
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
 // description: "Monetize personal data to earn passive income with SoT-Income Inc. \nSystem on tooth(SoT) is an autonomus computer embedded within a tooth, which uses Bluetooth, sensors and wireless power transfer to allow wireless communication. On the SoT are integrated microphone and bone conduction module that allow for two-way communication, as well as sensors that detect activities such as chewing, drinking, speaking, coughing, what food is eaten, and how often the user brushes his/her teeth."
 // id: BigNumber {_hex: '0x0e', _isBigNumber: true}
 // image: "https://gateway.ipfscdn.io/ipfs/QmcyKGgQ4n7SN49T6eFyfEjcoHJxJ2YJUTKFS1ibN1sNj6/14"
