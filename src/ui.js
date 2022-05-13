@@ -30,7 +30,6 @@ function addNftsToUI(nfts, uiElements) {
   // clear container
   container.innerHtml = ''
 
-
   const rowsCount = Math.ceil(nftElements.length / ITEMS_PER_ROW)
   for (let rowNumber = 0; rowNumber < rowsCount; rowNumber++) {
     const nftRow = row.cloneNode(true)
@@ -76,8 +75,12 @@ function prepareContainer(uiElements) {
   return uiElements
 }
 export function onMetamuskNotInstalled() {}
-function hideLoader() {}
-function showGrid() {}
+function hideLoader(nfts) {
+  return nfts
+}
+function showGrid(nfts) {
+  return nfts
+}
 function setButtonsLoading(state = true) {}
 
 ///////////////////////////////////
@@ -113,12 +116,14 @@ function loadNfts() {
     .then((nfts) => {
       console.log('Current nfts', nfts)
       addNftsToUI(nfts, uiElements)
+      return nfts
     })
     .then(hideLoader)
     .then((nfts) => {
       if (nfts.length <= currentMaxItemsToDisplay) {
         hideLoadMoreButton()
       }
+      return nfts
     })
     .then(showGrid)
     .catch(console.error)
