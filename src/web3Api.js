@@ -9,10 +9,12 @@ Moralis.onWeb3Enabled((result) => {
   const { account } = result
   currentAccount = account
   console.log(result)
+  window.dispatchEvent(new CustomEvent('onWeb3Enabled'), result)
 })
 Moralis.onWeb3Deactivated((result) => {
   currentAccount = null
   console.log(result)
+  window.dispatchEvent(new CustomEvent('onWeb3Deactivated'), result)
 })
 
 export function connect() {
