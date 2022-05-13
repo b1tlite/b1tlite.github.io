@@ -116,7 +116,7 @@ function loadNfts() {
     .then((nfts) => {
       console.log('Current nfts', nfts)
       addNftsToUI(nfts, uiElements)
-      return nfts
+      return bfts
     })
     .then(hideLoader)
     .then((nfts) => {
@@ -141,11 +141,11 @@ function saveNFTSToStore(nfts) {
 }
 function getUIElements() {
   window.mockElements = window.mockElements || {}
-  const container = window.mockElements.container || document.querySelector('.nftgallery')
-  const row = window.mockElements.row || container.querySelector('.galleryrow').cloneNode(true)
-  const item = window.mockElements.item || row.querySelector('.nftitem').cloneNode(true)
-  row.innerHtml = ''
-  return { container, row, item }
+  window.mockElements.container = window.mockElements.container || document.querySelector('.nftgallery')
+  window.mockElements.row = window.mockElements.row || container.querySelector('.galleryrow').cloneNode(true)
+  window.mockElements.row.innerHtml = ''
+  window.mockElements.item = window.mockElements.item || row.querySelector('.nftitem').cloneNode(true)
+  return { container: window.mockElements.container, row: window.mockElements.row, item: window.mockElements.item }
 }
 function bindActions() {
   const connectButton = document.querySelector('.connectwalletbutton ')
