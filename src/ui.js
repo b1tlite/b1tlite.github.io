@@ -52,14 +52,16 @@ function prepareNftItemElement(nft, mockItem, index) {
   // item.setAttribute('asset-max-quantity', quantity.toNumber())
 
   const img = item.querySelector('img')
-  // const head = item.querySelector('h3')
+  const head = item.querySelector('.nftitemheader')
+  const location = item.querySelector('.nftitemlocation > .text-block')
   // const desc = item.querySelector('.paragraph-light')
   const buyBtn = item.querySelector('.nftitembutton')
   buyBtn.onclick = (e) => {
     handleBuyClick(e, listingId, 1)
   }
   img.src = image
-  // head.innerHTML = name
+  head.innerHTML = `${properties.author || 'Uknown author'}, ${properties.age || 'unknown'} years old`
+  location.innerHTML = `${properties.location || properties.city || 'Uknown'}`
   // desc.innerHTML = `${description} ${quantity} ${Object.values(properties).join(', ')}`
   return item
 }
@@ -150,7 +152,7 @@ function getUIElements() {
   window.mockElements.item =
     window.mockElements.item || window.mockElements.row.querySelector('.nftitem').cloneNode(true)
 
-    
+
   window.mockElements.row.innerHTML = ''
 
   return { container: window.mockElements.container, row: window.mockElements.row, item: window.mockElements.item }
