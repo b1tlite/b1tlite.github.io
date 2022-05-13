@@ -30,7 +30,8 @@ function addNftsToUI(nfts, uiElements) {
   // clear container
   container.innerHtml = ''
 
-  const rowsCount = (nftElements.length / ITEMS_PER_ROW).ceil()
+
+  const rowsCount = Math.ceil(nftElements.length / ITEMS_PER_ROW)
   for (let rowNumber = 0; rowNumber < rowsCount; rowNumber++) {
     const nftRow = row.cloneNode(true)
     for (let itemNumber = 0; itemNumber < ITEMS_PER_ROW; itemNumber++) {
