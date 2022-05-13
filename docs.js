@@ -1,7 +1,7 @@
 const lib = {
-  init,
-  getNfts,
-  initialize,
+  init, // deprecated
+  getNfts, // deprecated
+  initialize, // used for another project
   web3: {
     isUserOwnsSomeNfts, // Promise => returns bool if user has some nfts from collection (only after wallet is connected)
     connect, // Promise => send request to connect user wallet
