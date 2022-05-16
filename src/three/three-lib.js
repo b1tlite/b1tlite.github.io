@@ -8,9 +8,10 @@ import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
 import { setupHtmlForThree } from './three-ui'
 
 export function runScene() {
-  const isProduction = process.argv[process.argv.indexOf('--mode') + 1] === 'production'
+  // const isProduction = process.argv[process.argv.indexOf('--mode') + 1] === 'production'
 
-  const hostUrl = isProduction ? 'https://b1tlite.github.io/dist/' : ''
+  // const hostUrl = isProduction ? 'https://b1tlite.github.io/dist/' : ''
+  const hostUrl = 'https://b1tlite.github.io/dist/'
   const negxUrl = `${hostUrl}assets/negx.jpg`
   const negyUrl = `${hostUrl}assets/negy.jpg`
   const negzUrl = `${hostUrl}assets/negz.jpg`
