@@ -1,5 +1,5 @@
 import { init } from './old'
-import { runScene } from './three-lib'
+import { runScene } from './three/three-lib'
 import { initialize } from './ui'
 import { buyNft, disableWeb3, enableWeb3, getNfts, getNFTsOwnedByUser, isUserOwnsSomeNfts } from './web3Api'
 
