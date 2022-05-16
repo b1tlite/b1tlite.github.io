@@ -1,35 +1,89 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
-import { ethers } from 'ethers'
 import Moralis from 'moralis/dist/moralis.min.js'
 import { onMetamuskNotInstalled } from './ui'
+const ethers = Moralis.web3Library
 
+window.senState = window.senState || {}
 let isMoralisStared = false
-let currentAccount
 Moralis.onWeb3Enabled((result) => {
-  const { account } = result
-  currentAccount = account
-  console.log(result)
+  const { account, chainId, connector, web3, provider } = result
+  window.senState.currentAccount = account
+  window.senState.currentChain = chainId
+  window.senState.connector = connector
+  window.senState.provider = provider
+  window.senState.web3Provider = web3
+
+  console.log('onWeb3Enabled', result)
   window.dispatchEvent(new CustomEvent('onWeb3Enabled'), result)
 })
 Moralis.onWeb3Deactivated((result) => {
-  currentAccount = null
-  console.log(result)
+  window.senState.currentAccount = null
+  console.log('onWeb3Deactivated', result)
   window.dispatchEvent(new CustomEvent('onWeb3Deactivated'), result)
 })
+Moralis.onAccountChanged(async function (account) {
+  window.senState.currentAccount = account
+  console.log('onAccountsChanged', account)
+  window.dispatchEvent(new CustomEvent('onAccountChanged'), account)
+  // const confirmed = confirm('Link this address to your account?');
+  // if (confirmed) {
+  // await Moralis.Web3.link(accounts[0]);
+  // alert('Address added!');
+  // }
+})
 
-export function connect() {
+Moralis.onChainChanged(async function (chainId) {
+  window.senState.currentChain = chainId
+  console.log('onChainChanged', chainId)
+  window.dispatchEvent(new CustomEvent('onChainChanged'), chainId)
+})
+
+export async function connect() {
   !isMoralisStared && initializeMoralis()
-  enableWeb3()
+  await enableWeb3()
+}
+
+export async function checkAndFixNetwork() {
+  try {
+    await web3.currentProvider.request({
+      method: 'wallet_switchEthereumChain',
+      params: [{ chainId: '0x89' }],
+    })
+  } catch (error) {
+    if (error.code === 4902) {
+      try {
+        await web3.currentProvider.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: '0x89',
+              chainName: 'Polygon Mainnet',
+              rpcUrls: ['https://polygon-rpc.com'],
+              nativeCurrency: {
+                name: 'Matic',
+                symbol: 'MATIC',
+                decimals: 18,
+              },
+              blockExplorerUrls: ['https://polygonscan.com/'],
+            },
+          ],
+        })
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
 }
 
 export async function enableWeb3() {
-  if (!Moralis.isWeb3Enabled()) {
-    console.log('Connecting')
-    await Moralis.enableWeb3()
-    console.log('Connected')
-  } else {
-    console.log('Already connected')
-  }
+  // if (!Moralis.isWeb3Enabled()) {
+  console.log('Connecting')
+  await Moralis.enableWeb3()
+  console.log('Connected')
+  // } else {
+  // console.log('Already connected')
+  // }
+  // await checkAndFixNetwork()
 }
 function isAlreadyConnected() {
   if (window.ethereum) {
@@ -74,7 +128,11 @@ function getSdk(provider) {
   return new ThirdwebSDK(provider.getSigner() || provider)
 }
 function getProvider(isReadOnly = false) {
-  if (!isReadOnly) return Moralis.enableWeb3()
+  if (!isReadOnly)
+    return Moralis.enableWeb3().then((provider) => {
+      checkAndFixNetwork()
+      return provider
+    })
 
   return new Promise((res, rej) => {
     const NODE_URL =
@@ -85,24 +143,28 @@ function getProvider(isReadOnly = false) {
 }
 export function buyNft(listingId, quantity = 1) {
   console.log('Trying to buy:', listingId, quantity)
-  return getProvider()
+  return checkAndFixNetwork()
+    .then(getProvider)
     .then(getSdk)
     .then(getMarketplace)
     .then((marketplace) => marketplace.direct.buyoutListing(listingId, quantity))
 }
 
+export async function getCurrentUserAddress() {
+  return window.senState.currentAccount
+}
 export function isUserOwnsSomeNfts() {
-  return getNFTsOwnedByUser.then((nfts) => nfts && nfts.length && nfts.length > 0)
+  return getNFTsOwnedByUser().then((nfts) => !!(nfts && nfts.length && nfts.length > 0))
 }
 export function getNFTsOwnedByUser() {
-  if (!currentAccount) {
+  if (!getCurrentUserAddress()) {
     console.error('Connect wallet first with sen.web3.connect()')
     throw new Error('Connect wallet first with sen.web3.connect()')
   }
   return getProvider(true) // readonly provider
     .then(getSdk)
     .then(getEdition)
-    .then((edition) => getEditionNftsOwnedBy(edition))
+    .then((edition) => getEditionNftsOwnedByMe(edition))
 }
 
 export async function getAllEditionNfts(edition) {
@@ -110,13 +172,14 @@ export async function getAllEditionNfts(edition) {
   console.log(nfts.map((e) => e.metadata.id.toNumber()))
   return nfts
 }
-export async function getEditionNftsOwnedBy(edition, adrress) {
-  const nfts = await edition.getOwned(adrress)
+export async function getEditionNftsOwnedBy(edition, address) {
+  console.log('getEditionNftsOwnedBy', address)
+  const nfts = await edition.getOwned(address)
   console.log(nfts.map((e) => e.metadata.id.toNumber()))
   return nfts
 }
 export async function getEditionNftsOwnedByMe(edition) {
-  return await getEditionNftsOwnedBy(edition, process.env.WALLET_ADDRESS)
+  return await getEditionNftsOwnedBy(edition, window.senState.currentAccount)
 }
 
 // import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from '@thirdweb-dev/sdk'

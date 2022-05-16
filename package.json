@@ -20,7 +20,6 @@
   },
   "dependencies": {
     "@thirdweb-dev/sdk": "^2.2.2",
-    "ethers": "^5.6.5",
     "moralis": "^1.6.0",
     "three": "^0.140.2"
   }

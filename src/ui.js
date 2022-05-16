@@ -3,8 +3,8 @@ import Moralis from 'moralis/dist/moralis.min.js'
 import { initializeMoralis, checkIfAlreadyConnected, enableWeb3, disableWeb3, getNfts, buyNft } from './web3Api'
 
 export async function initialize() {
-  initializeMoralis()
   bindActions()
+  initializeMoralis()
   checkIfAlreadyConnected()
   loadNfts()
 }
