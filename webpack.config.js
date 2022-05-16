@@ -17,8 +17,19 @@ module.exports = {
         exclude: /node_modules/,
         use: 'babel-loader',
       },
+      {
+        test: /\.(glb)$/i,
+        type: 'asset/resource',
+      },
     ],
   },
   mode: 'development',
   watch: true,
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    compress: true,
+    port: 9000,
+  },
 }

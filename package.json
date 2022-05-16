@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/index.bundle.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "serve": "webpack serve"
   },
   "keywords": [],
   "author": "",
@@ -14,11 +15,13 @@
     "@babel/preset-env": "^7.17.10",
     "babel-loader": "^8.2.5",
     "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0"
   },
   "dependencies": {
     "@thirdweb-dev/sdk": "^2.2.2",
     "ethers": "^5.6.5",
-    "moralis": "^1.6.0"
+    "moralis": "^1.6.0",
+    "three": "^0.140.2"
   }
 }
