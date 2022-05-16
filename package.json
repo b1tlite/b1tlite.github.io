@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/index.bundle.js",
   "scripts": {
-    "build": "webpack",
-    "serve": "webpack serve"
+    "dev": "webpack --mode=development",
+    "build": "webpack --mode=production"
   },
   "keywords": [],
   "author": "",

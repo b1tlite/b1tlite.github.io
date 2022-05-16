@@ -5,16 +5,19 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
 import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
-import { setupHtmlForThree } from './three-ui.js'
+import { setupHtmlForThree } from './three-ui'
 
 export function runScene() {
-  const negxUrl = 'assets/negx.jpg'
-  const negyUrl = 'assets/negy.jpg'
-  const negzUrl = 'assets/negz.jpg'
-  const posxUrl = 'assets/posx.jpg'
-  const posyUrl = 'assets/posy.jpg'
-  const poszUrl = 'assets/posz.jpg'
-  const modelUrl = 'assets/model.glb'
+  const isProduction = process.argv[process.argv.indexOf('--mode') + 1] === 'production'
+
+  const hostUrl = isProduction ? 'https://b1tlite.github.io/dist/' : ''
+  const negxUrl = `${hostUrl}assets/negx.jpg`
+  const negyUrl = `${hostUrl}assets/negy.jpg`
+  const negzUrl = `${hostUrl}assets/negz.jpg`
+  const posxUrl = `${hostUrl}assets/posx.jpg`
+  const posyUrl = `${hostUrl}assets/posy.jpg`
+  const poszUrl = `${hostUrl}assets/posz.jpg`
+  const modelUrl = `${hostUrl}assets/model.glb`
 
   setupHtmlForThree()
   forsePageStartOnTop()
