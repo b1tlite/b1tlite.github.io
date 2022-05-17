@@ -1,21 +1,20 @@
-import { init } from './old'
 import { runScene } from './three/three-lib'
-import { initialize } from './ui'
+import { initialize } from './ui/ui'
 import {
   buyNft,
-  disableWeb3,
-  enableWeb3,
   getNfts,
   getNFTsOwnedByUser,
   isUserOwnsSomeNfts,
   getCurrentUserAddress,
   getCurrentUserChain,
+  connect,
+  disconnect,
 } from './web3Api'
 
 const web3 = {
   isUserOwnsSomeNfts,
-  connect: enableWeb3,
-  disconnect: disableWeb3,
+  connect,
+  disconnect,
   getNfts,
   buyNft,
   getNFTsOwnedByUser,
@@ -26,7 +25,7 @@ const web3 = {
 const three = { runScene }
 
 if (window && !window.sen) {
-  window.sen = { init, getNfts, initialize, web3, three }
+  window.sen = { initialize, web3, three }
 }
 
-export { init, getNfts, initialize, web3, three }
+export { initialize, web3, three }

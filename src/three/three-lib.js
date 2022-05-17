@@ -20,7 +20,6 @@ export function runScene() {
   const poszUrl = `${hostUrl}assets/posz.jpg`
   const modelUrl = `${hostUrl}assets/model.glb`
 
-  setupHtmlForThree()
   forsePageStartOnTop()
 
   /**

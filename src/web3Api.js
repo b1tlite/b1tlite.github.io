@@ -1,6 +1,5 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 import Moralis from 'moralis/dist/moralis.min.js'
-import { onMetamuskNotInstalled } from './ui'
 const ethers = Moralis.web3Library
 
 window.senState = window.senState || {}
@@ -42,41 +41,67 @@ Moralis.onChainChanged(async function (chainId) {
   window.dispatchEvent(new CustomEvent('onChainChanged'), chainId)
 })
 
+export function bindOnWeb3Enabled(cb) {
+  // Subscribe to onWeb3Enabled events
+  const unsubscribe = Moralis.onWeb3Enabled((result) => {
+    // console.log('onWeb3Enabled', result)
+    cb && cb(result)
+  })
+  return unsubscribe
+}
+
+export function bindOnWeb33Deactivated(cb) {
+  // Subscribe to onWeb3Enabled events
+  const unsubscribe = Moralis.onWeb3Deactivated((result) => {
+    // console.log('onWeb3Deactivated', result)
+    cb && cb(result)
+  })
+  return unsubscribe
+}
+
 export async function connect() {
   !window.senState.isMoralisStared && initializeMoralis()
-  await enableWeb3()
+  return await enableWeb3()
+}
+
+export async function disconnect() {
+  return await disableWeb3()
 }
 
 export async function checkAndFixNetwork() {
   try {
-    await web3.currentProvider.request({
+    return await web3.currentProvider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: '0x89' }],
     })
   } catch (error) {
     if (error.code === 4902) {
       try {
-        await web3.currentProvider.request({
-          method: 'wallet_addEthereumChain',
-          params: [
-            {
-              chainId: '0x89',
-              chainName: 'Polygon Mainnet',
-              rpcUrls: ['https://polygon-rpc.com'],
-              nativeCurrency: {
-                name: 'Matic',
-                symbol: 'MATIC',
-                decimals: 18,
-              },
-              blockExplorerUrls: ['https://polygonscan.com/'],
-            },
-          ],
-        })
+        return await AddPolygonChain()
       } catch (error) {
         console.error(error)
       }
     }
   }
+}
+
+export async function AddPolygonChain() {
+  return await web3.currentProvider.request({
+    method: 'wallet_addEthereumChain',
+    params: [
+      {
+        chainId: '0x89',
+        chainName: 'Polygon Mainnet',
+        rpcUrls: ['https://polygon-rpc.com'],
+        nativeCurrency: {
+          name: 'Matic',
+          symbol: 'MATIC',
+          decimals: 18,
+        },
+        blockExplorerUrls: ['https://polygonscan.com/'],
+      },
+    ],
+  })
 }
 
 export async function enableWeb3() {
@@ -96,7 +121,7 @@ function isAlreadyConnected() {
 
   return new Promise((res, rej) => {
     console.error('Metamusk not installed!')
-    onMetamuskNotInstalled && onMetamuskNotInstalled()
+    // onMetamuskNotInstalled && onMetamuskNotInstalled()
     res()
   })
 }

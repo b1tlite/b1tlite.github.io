@@ -1,7 +1,5 @@
 const sen = {
-  init, // deprecated
-  getNfts, // deprecated
-  initialize, // used for another project
+  initialize, // (projectName = 'nftKids') => Promise used for html sites to initialize and bind proper actions
   web3: {
     isUserOwnsSomeNfts, // Promise => returns bool if user has some nfts from collection (only after wallet is connected)
     connect, // Promise => send request to connect user wallet
