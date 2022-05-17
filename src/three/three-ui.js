@@ -1,10 +1,10 @@
-import { bindOnWeb33Deactivated, bindOnWeb3Enabled, connect, disconnect } from '../web3Api'
+import { bindOnWeb33Deactivated, bindOnWeb3Enabled, checkAndFixNetwork, connect, disconnect } from '../web3Api'
 
 export function setupHtmlForThree() {
   // wrap
   const { body } = document
-  const oldHtml = body.innerHTML
-  body.innerHTML = '<main>' + oldHtml + '</main>'
+  // const oldHtml = body.innerHTML
+  // body.innerHTML = '<main>' + oldHtml + '</main>'
 
   // setup main style
   const main = document.querySelector('main')
@@ -16,6 +16,7 @@ export function setupHtmlForThree() {
   canvas.id = 'bg'
   body.append(canvas)
 }
+
 export function bindActions() {
   const connectButton = document.querySelector('.connect-button ')
   connectButton.onclick = connect
@@ -27,6 +28,8 @@ export function bindActions() {
   })
   bindOnWeb33Deactivated((result) => {
     connectButton.innerHTML = 'Connect'
-    connectButton.onclick = connect
+    connectButton.onclick = () => {
+      connect().then(checkAndFixNetwork)
+    }
   })
 }
