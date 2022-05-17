@@ -9,6 +9,7 @@ import {
   getNFTsOwnedByUser,
   isUserOwnsSomeNfts,
   getCurrentUserAddress,
+  getCurrentUserChain,
 } from './web3Api'
 
 const web3 = {
@@ -19,9 +20,12 @@ const web3 = {
   buyNft,
   getNFTsOwnedByUser,
   getCurrentUserAddress,
+  getCurrentUserChain,
 }
+
 const three = { runScene }
-if (window) {
+
+if (window && !window.sen) {
   window.sen = { init, getNfts, initialize, web3, three }
 }
 

@@ -4,7 +4,11 @@ import { onMetamuskNotInstalled } from './ui'
 const ethers = Moralis.web3Library
 
 window.senState = window.senState || {}
-let isMoralisStared = false
+window.senState.ethers = ethers
+window.senState.Moralis = Moralis
+window.senState.ThirdwebSDK = ThirdwebSDK
+window.senState.isMoralisStared = false
+
 Moralis.onWeb3Enabled((result) => {
   const { account, chainId, connector, web3, provider } = result
   window.senState.currentAccount = account
@@ -39,7 +43,7 @@ Moralis.onChainChanged(async function (chainId) {
 })
 
 export async function connect() {
-  !isMoralisStared && initializeMoralis()
+  !window.senState.isMoralisStared && initializeMoralis()
   await enableWeb3()
 }
 
@@ -109,7 +113,7 @@ export function initializeMoralis() {
   const serverUrl = 'https://6hiqo5aptzjt.usemoralis.com:2053/server' //Server url from moralis.io
   const appId = '4tLI25e1VFuYR6InpKuVqIp4T6zXSa8pHmrh0BBz' // Application id from moralis.io
   Moralis.start({ serverUrl, appId })
-  isMoralisStared = true
+  window.senState.isMoralisStared = true
 }
 function getMarketplace(sdk) {
   return sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
@@ -153,6 +157,9 @@ export function buyNft(listingId, quantity = 1) {
 export async function getCurrentUserAddress() {
   return window.senState.currentAccount
 }
+export async function getCurrentUserChain() {
+  return window.senState.currentChain
+}
 export function isUserOwnsSomeNfts() {
   return getNFTsOwnedByUser().then((nfts) => !!(nfts && nfts.length && nfts.length > 0))
 }
@@ -183,14 +190,7 @@ export async function getEditionNftsOwnedByMe(edition) {
 }
 
 // import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from '@thirdweb-dev/sdk'
-// import {
-//   getProvider,
-//   getBalance,
-//   toNumber,
-//   getProviderSigner,
-//   getWallet,
-//   getWalletInfoAsync,
-// } from './ethres-utils.js'
+
 // export async function getCurrentListings(marketplace) {
 //   const listings = await marketplace.getActiveListings()
 //   console.log('Current listings', listings)
@@ -221,42 +221,4 @@ export async function getEditionNftsOwnedByMe(edition) {
 //   } catch (err) {
 //     console.log(err)
 //   }
-// }
-
-// export function getMarket(sdk, marketAddress) {
-//   console.log('Try get market from address', marketAddress)
-//   const market = sdk.getMarketplace(marketAddress)
-//   // console.log('Market', market);
-//   console.log(
-//     'Got market from address',
-//     market.contractWrapper.readContract.address
-//   )
-//   return market
-// }
-
-// export function getEdition(sdk, editionAddress) {
-//   console.log('Try get edition from address', editionAddress)
-//   const edition = sdk.getEdition(editionAddress)
-//   // console.log('Edition', edition);
-//   console.log(
-//     'Got edition from address',
-//     edition.contractWrapper.readContract.address
-//   )
-//   return edition
-// }
-
-// export function getThirdWebSdk() {
-//   const provider = getProvider()
-//   const wallet = getWallet(provider)
-//   return new ThirdwebSDK(wallet, {
-//     readonlySettings: {
-//       chainId: 137,
-//       rpcUrl:
-//         'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet',
-//     },
-//     gasSettings: {
-//       speed: 'fastest',
-//       maxPriceInGwei: 500,
-//     },
-//   })
 // }
