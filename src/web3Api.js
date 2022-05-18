@@ -1,5 +1,6 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 import Moralis from 'moralis/dist/moralis.min.js'
+import { toDateTime } from './ui/utils'
 const ethers = Moralis.web3Library
 
 window.senState = window.senState || {}
@@ -141,17 +142,60 @@ export function initializeMoralis() {
   window.senState.isMoralisStared = true
 }
 function getMarketplace(sdk) {
-  return sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9')
+  return sdk.getMarketplace('0x04a31816384b785e2DF58Ff706fDDBf160bF1DA9') // my
 }
 function getEdition(sdk) {
-  return sdk.getEdition('0x5425fC8BF42501386C9920B3a7044ACB700278ee')
+  return sdk.getEdition('0x5425fC8BF42501386C9920B3a7044ACB700278ee') // kirill
 }
-export function getNfts() {
+function getNFTDrop(sdk) {
+  return sdk.getNFTDrop('0x5425fC8BF42501386C9920B3a7044ACB700278ee') // my
+}
+
+export function mintNFTFromDrop(quantity = 1) {
+  console.log('Trying to mint from drop', quantity)
+  return getProvider()
+    .then(getSdk)
+    .then(getNFTDrop)
+    .then((drop) => drop.claim(quantity))
+}
+
+export function getNFTDropInfo() {
+  return getProvider(true) // read
+    .then(getSdk)
+    .then(getNFTDrop)
+    .then(getDropInfo)
+}
+function getDropInfo(drop) {
+  return Promise.all([drop.totalSupply(), drop.totalUnclaimedSupply(), drop.getOwned(getCurrentUserAddress())]).then((values) => {
+    const [totalSupply, totalUnclaimedSupply, ownedNfts] = values
+    console.log(values) // [3, 42, "foo"]
+    return { totalSupply, totalUnclaimedSupply, ownedNfts }
+  })
+}
+export function getEditionNfts() {
+  return getProvider(true) // readonly provider
+    .then(getSdk)
+    .then(getEdition)
+    .then(getAllEditionNfts)
+}
+export function getMarketListings(onlyAvaliable = true) {
   return getProvider(true) // readonly provider
     .then(getSdk)
     .then(getMarketplace)
     .then((marketplace) => marketplace.getActiveListings())
-    .then((listings) => listings.filter((el) => el.quantity.toNumber() > 0))
+    .then((listings) =>
+      listings.map((el) => {
+        const startSeconds = el.startTimeInSeconds.toNumber()
+        el.startedAt = toDateTime(startSeconds)
+        const endDateInseconds = startSeconds + el.secondsUntilEnd.toNumber()
+        el.endsAt = toDateTime(endDateInseconds)
+        el.isEnded = endDateInseconds > new Date().getSeconds()
+        el.soldOut = el.quantity.toNumber() < 1
+        el.isAvaliable = !el.soldOut && !el.isEnded
+        return el
+      })
+    )
+    .then((listings) => listings.filter((el) => !onlyAvaliable || el.isAvaliable))
 }
 function getSdk(provider) {
   return new ThirdwebSDK(provider.getSigner() || provider)

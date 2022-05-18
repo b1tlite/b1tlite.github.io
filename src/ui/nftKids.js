@@ -1,5 +1,5 @@
 import Moralis from 'moralis/dist/moralis.min.js'
-import { enableWeb3, disableWeb3, getNfts, buyNft, bindOnWeb3Enabled, bindOnWeb33Deactivated } from '../web3Api'
+import { enableWeb3, disableWeb3, getMarketListings, buyNft, bindOnWeb3Enabled, bindOnWeb33Deactivated } from '../web3Api'
 import { capitalizeFirstLetter } from './utils'
 
 const ITEMS_PER_PAGE = 6
@@ -113,7 +113,7 @@ export function loadNfts() {
   // const { container, row, item } = uiElements
   prepareContainer(uiElements)
 
-  getNfts()
+  getMarketListings()
     .then((nfts) => {
       console.log('Current nfts', nfts)
       addNftsToUI(nfts, uiElements)

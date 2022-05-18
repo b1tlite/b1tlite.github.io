@@ -2,24 +2,29 @@ import { runScene } from './three/three-lib'
 import { initialize } from './ui/ui'
 import {
   buyNft,
-  getNfts,
+  getMarketListings,
   getNFTsOwnedByUser,
   isUserOwnsSomeNfts,
   getCurrentUserAddress,
   getCurrentUserChain,
   connect,
   disconnect,
+  getEditionNfts,
+  getNFTDropInfo,
 } from './web3Api'
 
 const web3 = {
   isUserOwnsSomeNfts,
   connect,
   disconnect,
-  getNfts,
+  getNfts: getMarketListings,
+  getMarketListings,
   buyNft,
   getNFTsOwnedByUser,
   getCurrentUserAddress,
   getCurrentUserChain,
+  getEditionNfts,
+  getNFTDropInfo,
 }
 
 const three = { runScene }
