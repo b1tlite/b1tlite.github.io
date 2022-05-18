@@ -17,9 +17,13 @@ export function setupHtmlForThree() {
   body.append(canvas)
 }
 
+function handleConnectClick() {
+  return connect().then(checkAndFixNetwork).then(openPopup).catch(console.error)
+}
+
 export function bindActions() {
   const connectButton = document.querySelector('.connect-button ')
-  connectButton.onclick = connect
+  connectButton.onclick = handleConnectClick
 
   bindOnWeb3Enabled((result) => {
     connectButton.innerHTML = `Disconnect`
@@ -28,8 +32,10 @@ export function bindActions() {
   })
   bindOnWeb33Deactivated((result) => {
     connectButton.innerHTML = 'Connect'
-    connectButton.onclick = () => {
-      connect().then(checkAndFixNetwork)
-    }
+    connectButton.onclick = handleConnectClick
   })
+}
+
+function openPopup() {
+  return document.querySelector('.open-popup').click()
 }
