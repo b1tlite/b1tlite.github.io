@@ -166,11 +166,13 @@ export function getNFTDropInfo() {
     .then(getDropInfo)
 }
 function getDropInfo(drop) {
-  return Promise.all([drop.totalSupply(), drop.totalUnclaimedSupply(), drop.getOwned(getCurrentUserAddress())]).then((values) => {
-    const [totalSupply, totalUnclaimedSupply, ownedNfts] = values
-    console.log(values) // [3, 42, "foo"]
-    return { totalSupply, totalUnclaimedSupply, ownedNfts }
-  })
+  return Promise.all([drop.totalSupply(), drop.totalUnclaimedSupply(), drop.getOwned(getCurrentUserAddress())]).then(
+    (values) => {
+      const [totalSupply, totalUnclaimedSupply, ownedNfts] = values
+      console.log(values) // [3, 42, "foo"]
+      return { totalSupply, totalUnclaimedSupply, ownedNfts }
+    }
+  )
 }
 export function getEditionNfts() {
   return getProvider(true) // readonly provider
@@ -182,7 +184,7 @@ export function getMarketListings(onlyAvaliable = true) {
   return getProvider(true) // readonly provider
     .then(getSdk)
     .then(getMarketplace)
-    .then((marketplace) => marketplace.getActiveListings())
+    .then((marketplace) => (onlyAvaliable ? marketplace.getActiveListings() : marketplace.getAllListings()))
     .then((listings) =>
       listings.map((el) => {
         const startSeconds = el.startTimeInSeconds.toNumber()
