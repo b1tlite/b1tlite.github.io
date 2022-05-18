@@ -25,6 +25,7 @@ module.exports = {
   },
   mode: 'development',
   watch: true,
+  devtool: 'source-map',
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),

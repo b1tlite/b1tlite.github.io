@@ -116,13 +116,13 @@ export async function enableWeb3() {
 }
 function isAlreadyConnected() {
   if (window.ethereum) {
-    return window.ethereum.request({ method: 'eth_accounts' }).then((accounts) => accounts.length === 0)
+    return window.ethereum.request({ method: 'eth_accounts' }).then((accounts) => accounts.length !== 0)
   }
 
   return new Promise((res, rej) => {
     console.error('Metamusk not installed!')
     // onMetamuskNotInstalled && onMetamuskNotInstalled()
-    res()
+    res(false)
   })
 }
 export function checkIfAlreadyConnected() {

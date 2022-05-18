@@ -17,7 +17,8 @@ export async function initialize(project = 'nftKids') {
       setupHtmlForThree()
       runScene()
       bindActionsThree()
-      initializeMoralis()
+      // initializeMoralis()
+      checkIfAlreadyConnected()
       break
 
     default:
