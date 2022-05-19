@@ -127,7 +127,7 @@ function isAlreadyConnected() {
   })
 }
 export function checkIfAlreadyConnected() {
-  isAlreadyConnected().then((isConnected) => {
+  return isAlreadyConnected().then((isConnected) => {
     if (isConnected) return Moralis.enableWeb3()
   })
 }
@@ -148,15 +148,24 @@ function getEdition(sdk) {
   return sdk.getEdition('0x5425fC8BF42501386C9920B3a7044ACB700278ee') // kirill
 }
 function getNFTDrop(sdk) {
-  return sdk.getNFTDrop('0x5425fC8BF42501386C9920B3a7044ACB700278ee') // my
+  return sdk.getNFTDrop('0x54B50e5bFFf2adA3748b6F7004dE6761fC2E89D0') // my
 }
 
 export function mintNFTFromDrop(quantity = 1) {
   console.log('Trying to mint from drop', quantity)
-  return getProvider()
-    .then(getSdk)
-    .then(getNFTDrop)
-    .then((drop) => drop.claim(quantity))
+  return (
+    getProvider()
+      .then(getSdk)
+      .then(getNFTDrop)
+      .then((drop) => drop.claim(quantity))
+      // .then((drop) => getCurrentUserAddress().then((address) => drop.claimTo(address, quantity)))
+      // .then((drop) => drop.getAll())
+      .then((res) => {
+        console.log('mintNFTFromDrop', res)
+        return res
+      })
+  )
+  //
 }
 
 export function getNFTDropInfo() {
@@ -165,14 +174,29 @@ export function getNFTDropInfo() {
     .then(getNFTDrop)
     .then(getDropInfo)
 }
+
+export function getNFTDropsOwnedByUser() {
+  return getProvider(true) // read
+    .then(getSdk)
+    .then(getNFTDrop)
+    .then(getOwnedDrops)
+}
+
 function getDropInfo(drop) {
-  return Promise.all([drop.totalSupply(), drop.totalUnclaimedSupply(), drop.getOwned(getCurrentUserAddress())]).then(
-    (values) => {
-      const [totalSupply, totalUnclaimedSupply, ownedNfts] = values
-      console.log(values) // [3, 42, "foo"]
-      return { totalSupply, totalUnclaimedSupply, ownedNfts }
-    }
-  )
+  return Promise.all([drop.totalSupply(), drop.totalUnclaimedSupply()]).then((values) => {
+    const [totalSupply, totalUnclaimedSupply] = values
+    console.log('getDropInfo', values) // [3, 42, "foo"]
+    return { totalSupply, totalUnclaimedSupply }
+  })
+}
+
+function getOwnedDrops(drop) {
+  return getCurrentUserAddress()
+    .then((address) => drop.getOwned(address))
+    .then((drops) => {
+      console.log('getNFTDropsOwnedByUser', drops)
+      return drops
+    })
 }
 export function getEditionNfts() {
   return getProvider(true) // readonly provider

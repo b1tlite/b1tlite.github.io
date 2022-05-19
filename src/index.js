@@ -11,6 +11,7 @@ import {
   disconnect,
   getEditionNfts,
   getNFTDropInfo,
+  getNFTDropsOwnedByUser,
 } from './web3Api'
 
 const web3 = {
@@ -25,6 +26,7 @@ const web3 = {
   getCurrentUserChain,
   getEditionNfts,
   getNFTDropInfo,
+  getNFTDropsOwnedByUser,
 }
 
 const three = { runScene }

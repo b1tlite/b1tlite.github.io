@@ -1,4 +1,11 @@
-import { bindOnWeb33Deactivated, bindOnWeb3Enabled, checkAndFixNetwork, connect, disconnect, mintNFTFromDrop } from '../web3Api'
+import {
+  bindOnWeb33Deactivated,
+  bindOnWeb3Enabled,
+  checkAndFixNetwork,
+  connect,
+  disconnect,
+  mintNFTFromDrop,
+} from '../web3Api'
 
 export function setupHtmlForThree() {
   // wrap
@@ -26,7 +33,9 @@ export function bindActions() {
   connectButton.onclick = handleConnectClick
 
   const mintButton = document.querySelector('.mint-button')
-  mintButton.onclick = mintNFTFromDrop
+  mintButton.onclick = () => {
+    mintNFTFromDrop(1)
+  }
 
   bindOnWeb3Enabled((result) => {
     connectButton.innerHTML = `Disconnect`

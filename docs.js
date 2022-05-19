@@ -24,7 +24,8 @@ const sen = {
     getCurrentUserChain, // returns chainId
     mintNFTFromDrop, // (quantity = 1) => Promise => 
     //@returns - an array of results containing the id of the token claimed, the transaction receipt and a promise to optionally fetch the nft metadata
-    getNFTDropInfo, // Promise => { ownedNfts, totalSupply, totalUnclaimedSupply }
+    getNFTDropInfo, // Promise => { totalSupply, totalUnclaimedSupply }
+    getNFTDropsOwnedByUser, // Promise => [nftDrop] // returns users 'inventory' from drop // needs connected wallet
   },
   three: {
     // used for another project
