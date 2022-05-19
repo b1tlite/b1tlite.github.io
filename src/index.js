@@ -12,6 +12,8 @@ import {
   getEditionNfts,
   getNFTDropInfo,
   getNFTDropsOwnedByUser,
+  getUserBlockieImageDataUrl,
+  getUserBlockieImageBuffer,
 } from './web3Api'
 
 const web3 = {
@@ -27,6 +29,8 @@ const web3 = {
   getEditionNfts,
   getNFTDropInfo,
   getNFTDropsOwnedByUser,
+  getUserBlockieImageDataUrl,
+  getUserBlockieImageBuffer,
 }
 
 const three = { runScene }

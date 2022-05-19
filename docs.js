@@ -26,6 +26,10 @@ const sen = {
     //@returns - an array of results containing the id of the token claimed, the transaction receipt and a promise to optionally fetch the nft metadata
     getNFTDropInfo, // Promise => { totalSupply, totalUnclaimedSupply }
     getNFTDropsOwnedByUser, // Promise => [nftDrop] // returns users 'inventory' from drop // needs connected wallet
+    getUserBlockieImageDataUrl, // Promise => returns DataUrl of blockie image of current User address
+    // => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgC..."
+    getUserBlockieImageBuffer, // Promise => return byte array (buffer) of blockie image of current User address
+    // => fs.writeFileSync('out.png', buffer)
   },
   three: {
     // used for another project

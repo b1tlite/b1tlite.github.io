@@ -1,4 +1,5 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
+import blockies from 'ethereum-blockies-png'
 import Moralis from 'moralis/dist/moralis.min.js'
 import { toDateTime } from './ui/utils'
 const ethers = Moralis.web3Library
@@ -103,6 +104,14 @@ export async function AddPolygonChain() {
       },
     ],
   })
+}
+
+export function getUserBlockieImageDataUrl() {
+  return getCurrentUserAddress().then((address) => blockies.createDataURL({ seed: address }))
+}
+
+export function getUserBlockieImageBuffer() {
+  return getCurrentUserAddress().then((address) => blockies.createBuffer({ seed: address }))
 }
 
 export async function enableWeb3() {
