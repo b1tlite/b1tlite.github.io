@@ -1,5 +1,12 @@
 import Moralis from 'moralis/dist/moralis.min.js'
-import { enableWeb3, disableWeb3, getMarketListings, buyNft, bindOnWeb3Enabled, bindOnWeb33Deactivated } from '../web3Api'
+import {
+  enableWeb3,
+  disableWeb3,
+  getMarketListings,
+  buyNft,
+  bindOnWeb3Enabled,
+  bindOnWeb33Deactivated,
+} from '../web3Api'
 import { capitalizeFirstLetter } from './utils'
 
 const ITEMS_PER_PAGE = 6
@@ -9,11 +16,15 @@ let currentMaxItemsToDisplay = ITEMS_PER_PAGE
 ///////////////////////////////////
 // UI
 function hideLoadMoreButton() {
-  const loadmoreButton = document.querySelector('.loadmorebuttontext ')
-  loadmoreButton.display = 'none'
+  const loadmoreButton = getLoadMoreButton()
+  loadmoreButton.style.display = 'none'
 }
-function addNftsToUI(nfts, uiElements) {
-  const { container, row, item } = uiElements
+function getLoadMoreButton() {
+  return document.querySelector('.loadmorebutton')
+}
+
+function addNftsToUI(nfts) {
+  const { container, row, item } = getUIElements()
 
   // max 6 for first time display
   nfts = nfts.slice(0, currentMaxItemsToDisplay)
@@ -65,22 +76,15 @@ function prepareNftItemElement(nft, mockItem, index) {
   // desc.innerHTML = `${description} ${quantity} ${Object.values(properties).join(', ')}`
   return item
 }
-function prepareContainer(uiElements) {
-  const { container, row, item } = uiElements
-  // // clear exact column classes
-  // const firstClass = mockItem.classList[0]
-  // mockItem.classList.remove(...mockItem.classList)
-  // mockItem.classList.add(firstClass)
-  // // clear grid
-  // container.innerHTML = ''
-  // // mockItem.display = 'none'
-  return uiElements
-}
+
 export function onMetamuskNotInstalled() {}
 function hideLoader(nfts) {
+  document.querySelector('.nftloader').style.display = 'none'
   return nfts
 }
-function showGrid(nfts) {
+function showNftGallery(nfts) {
+  const { container} = getUIElements()
+  container.style.display = 'flex'
   return nfts
 }
 function setButtonsLoading(state = true) {}
@@ -100,33 +104,27 @@ function handleBuyClick(e, listingId, quntity = 1) {
 function handleLoadMore(e) {
   currentMaxItemsToDisplay += ITEMS_PER_PAGE
   const nfts = getSavedNFTS()
+  checkIfShouldHideLoadMore(nfts)
+  addNftsToUI(nfts)
+}
+
+function checkIfShouldHideLoadMore(nfts) {
   if (nfts.length <= currentMaxItemsToDisplay) {
     hideLoadMoreButton()
   }
+  return nfts
 }
-export function loadNfts() {
-  // get moc item
-  // remove it from from gid
-  // display loader ??
-  // prepare moc
-  const uiElements = getUIElements()
-  // const { container, row, item } = uiElements
-  prepareContainer(uiElements)
 
+export function loadNfts() {
   getMarketListings()
     .then((nfts) => {
       console.log('Current nfts', nfts)
-      addNftsToUI(nfts, uiElements)
+      addNftsToUI(nfts)
       return nfts
     })
     .then(hideLoader)
-    .then((nfts) => {
-      if (nfts.length <= currentMaxItemsToDisplay) {
-        hideLoadMoreButton()
-      }
-      return nfts
-    })
-    .then(showGrid)
+    .then(checkIfShouldHideLoadMore)
+    .then(showNftGallery)
     .catch(console.error)
 }
 ///////////////////////////////////
@@ -155,11 +153,11 @@ function getUIElements() {
   return { container: window.mockElements.container, row: window.mockElements.row, item: window.mockElements.item }
 }
 export function bindActions() {
-  const connectButton = document.querySelector('.connectwalletbutton ')
+  const connectButton = document.querySelector('.connectwalletbutton')
   const connectButtontext = document.querySelector('.headerbuttontext')
   connectButton.onclick = enableWeb3
 
-  const loadmoreButton = document.querySelector('.loadmorebuttontext ')
+  const loadmoreButton = getLoadMoreButton()
   loadmoreButton.onclick = handleLoadMore
 
   // Subscribe to onWeb3Enabled events

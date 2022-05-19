@@ -10,18 +10,33 @@
     <main>
       <button id="connect">connect</button>
       <button class="connect-button">connect-button</button>
+      <button class="connectwalletbutton"><div class="headerbuttontext">connectwalletbutton</div></button>
       <button class="open-popup">open-popup</button>
       <button class="mint-button">mint-button</button>
+      <button class="loadmorebutton">loadmorebutton</button>
       <p class="items-count"></p>
       <p class="price"></p>
+      <div class="nftloader" style="display: flex">nftLoader</div>
+      <div class="nftgallery" style="display: none">
+        <div class="galleryrow">
+          <div class="nftitem">
+            <img src="" alt="" />
+            <p class="nftitemheader"></p>
+            <div class="nftitemlocation">
+              <p class="text-block"></p>
+            </div>
+            <button class="nftitembutton">buy</button>
+          </div>
+        </div>
+      </div>
       <script src="index.bundle.js"></script>
     </main>
     <script>
       // console.log(sen)
-      // alert(sen.capital("hridayesh"))
       // sen.three.runScene()
       // sen.web3.connect()
-      sen.initialize('mintSite')
+      // sen.initialize('mintSite')
+      sen.initialize('nftKids')
     </script>
   </body>
 </html>
