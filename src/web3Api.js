@@ -202,7 +202,7 @@ export function getMarketListings(onlyAvaliable = true) {
       .then((listings) => listings.filter((el) => !onlyAvaliable || el.isAvaliable))
       .then((listings) => listings.filter((el) => !onlyAvaliable || el.isAvaliable))
       .then((listings) => {
-        console.error(listings)
+        console.log('getMarketListings', listings)
         return listings
       })
   )
@@ -255,13 +255,14 @@ export function getNFTsOwnedByUser() {
 
 export async function getAllEditionNfts(edition) {
   const nfts = await edition.getAll()
-  console.log(nfts.map((e) => e.metadata.id.toNumber()))
+  // console.log(nfts.map((e) => e.metadata.id.toNumber()))
+  console.log('getAllEditionNfts', nfts)
   return nfts
 }
 export async function getEditionNftsOwnedBy(edition, address) {
   console.log('getEditionNftsOwnedBy', address)
   const nfts = await edition.getOwned(address)
-  console.log(nfts.map((e) => e.metadata.id.toNumber()))
+  console.log('getEditionNftsOwnedBy', nfts)
   return nfts
 }
 export async function getEditionNftsOwnedByMe(edition) {

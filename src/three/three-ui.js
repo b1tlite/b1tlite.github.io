@@ -18,7 +18,7 @@ export function setupHtmlForThree() {
 }
 
 function handleConnectClick() {
-  return connect().then(checkAndFixNetwork).then(openPopup).catch(console.error)
+  return connect().then(openPopup).catch(console.error)
 }
 
 export function bindActions() {
