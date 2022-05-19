@@ -181,23 +181,31 @@ export function getEditionNfts() {
     .then(getAllEditionNfts)
 }
 export function getMarketListings(onlyAvaliable = true) {
-  return getProvider(true) // readonly provider
-    .then(getSdk)
-    .then(getMarketplace)
-    .then((marketplace) => (onlyAvaliable ? marketplace.getActiveListings() : marketplace.getAllListings()))
-    .then((listings) =>
-      listings.map((el) => {
-        const startSeconds = el.startTimeInSeconds.toNumber()
-        el.startedAt = toDateTime(startSeconds)
-        const endDateInseconds = startSeconds + el.secondsUntilEnd.toNumber()
-        el.endsAt = toDateTime(endDateInseconds)
-        el.isEnded = endDateInseconds > new Date().getSeconds()
-        el.soldOut = el.quantity.toNumber() < 1
-        el.isAvaliable = !el.soldOut && !el.isEnded
-        return el
+  return (
+    getProvider(true) // readonly provider
+      .then(getSdk)
+      .then(getMarketplace)
+      // .then((marketplace) => marketplace.getAllListings())
+      .then((marketplace) => (onlyAvaliable ? marketplace.getActiveListings() : marketplace.getAllListings()))
+      .then((listings) =>
+        listings.map((el) => {
+          const startSeconds = el.startTimeInSeconds.toNumber()
+          el.startedAt = toDateTime(startSeconds)
+          const endDateInseconds = startSeconds + el.secondsUntilEnd.toNumber()
+          el.endsAt = toDateTime(endDateInseconds)
+          el.isEnded = endDateInseconds < new Date().getSeconds()
+          el.soldOut = el.quantity.toNumber() < 1
+          el.isAvaliable = !el.soldOut && !el.isEnded
+          return el
+        })
+      )
+      .then((listings) => listings.filter((el) => !onlyAvaliable || el.isAvaliable))
+      .then((listings) => listings.filter((el) => !onlyAvaliable || el.isAvaliable))
+      .then((listings) => {
+        console.error(listings)
+        return listings
       })
-    )
-    .then((listings) => listings.filter((el) => !onlyAvaliable || el.isAvaliable))
+  )
 }
 function getSdk(provider) {
   return new ThirdwebSDK(provider.getSigner() || provider)
