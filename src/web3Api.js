@@ -200,7 +200,6 @@ export function getMarketListings(onlyAvaliable = true) {
         })
       )
       .then((listings) => listings.filter((el) => !onlyAvaliable || el.isAvaliable))
-      .then((listings) => listings.filter((el) => !onlyAvaliable || el.isAvaliable))
       .then((listings) => {
         console.log('getMarketListings', listings)
         return listings
