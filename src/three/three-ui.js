@@ -4,6 +4,7 @@ import {
   checkAndFixNetwork,
   connect,
   disconnect,
+  getNFTDropInfo,
   mintNFTFromDrop,
 } from '../web3Api'
 
@@ -50,4 +51,12 @@ export function bindActions() {
 
 function openPopup() {
   return document.querySelector('.open-popup').click()
+}
+
+export function populatePopupWithDropInfo() {
+  return getNFTDropInfo().then(({ totalSupply, totalUnclaimedSupply, claimConditions }) => {
+    document.querySelector('.items-count').innerHTML = `${totalUnclaimedSupply}/${totalSupply}`
+    const {currencyMetadata: {displayValue, name}} = claimConditions
+    document.querySelector('.price').innerHTML = `${displayValue} ${name}`
+  })
 }

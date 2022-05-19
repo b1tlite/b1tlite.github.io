@@ -191,11 +191,11 @@ export function getNFTDropsOwnedByUser() {
     .then(getOwnedDrops)
 }
 
-function getDropInfo(drop) {
-  return Promise.all([drop.totalSupply(), drop.totalUnclaimedSupply()]).then((values) => {
-    const [totalSupply, totalUnclaimedSupply] = values
+async function getDropInfo(drop) {
+  return Promise.all([drop.totalSupply(), drop.totalUnclaimedSupply(), drop.claimConditions.getActive()]).then((values) => {
+    const [totalSupply, totalUnclaimedSupply, claimConditions] = values
     console.log('getDropInfo', values) // [3, 42, "foo"]
-    return { totalSupply, totalUnclaimedSupply }
+    return { totalSupply, totalUnclaimedSupply, claimConditions }
   })
 }
 

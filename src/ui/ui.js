@@ -1,6 +1,6 @@
 // import Moralis from 'moralis/types'
 import { runScene } from '../three/three-lib'
-import { bindActions as bindActionsThree, setupHtmlForThree } from '../three/three-ui'
+import { bindActions as bindActionsThree, setupHtmlForThree, populatePopupWithDropInfo } from '../three/three-ui'
 import {
   initializeMoralis,
   checkIfAlreadyConnected,
@@ -16,7 +16,7 @@ export async function initialize(project = 'nftKids') {
     case 'nftKids':
       bindActionsKids()
       initializeMoralis()
-      checkIfAlreadyConnected()
+      // checkIfAlreadyConnected()
       loadNfts()
       break
 
@@ -25,8 +25,9 @@ export async function initialize(project = 'nftKids') {
       runScene()
       bindActionsThree()
       initializeMoralis()
-      checkIfAlreadyConnected().then(getNFTDropsOwnedByUser)
-      getMarketListings()
+      // checkIfAlreadyConnected().then(getNFTDropsOwnedByUser)
+      // getMarketListings()
+      populatePopupWithDropInfo()
       break
 
     default:
