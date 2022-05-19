@@ -156,6 +156,7 @@ function getUIElements() {
 }
 export function bindActions() {
   const connectButton = document.querySelector('.connectwalletbutton ')
+  const connectButtontext = document.querySelector('.headerbuttontext')
   connectButton.onclick = enableWeb3
 
   const loadmoreButton = document.querySelector('.loadmorebuttontext ')
@@ -163,12 +164,12 @@ export function bindActions() {
 
   // Subscribe to onWeb3Enabled events
   bindOnWeb3Enabled((result) => {
-    connectButton.innerHTML = `Disconnect`
+    connectButtontext.innerHTML = `Disconnect wallet`
     // connectButton.innerHTML = `Connected as ${account}`
     connectButton.onclick = disableWeb3
   })
   bindOnWeb33Deactivated((result) => {
-    connectButton.innerHTML = 'Connect'
+    connectButtontext.innerHTML = 'Connect wallet'
     connectButton.onclick = enableWeb3
   })
 }
