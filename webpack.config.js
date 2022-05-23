@@ -21,8 +21,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.bundle.js',
-    sourceMapFilename: '[name].[contenthash:8].map',
-    chunkFilename: '[id].[contenthash:8].js',
+    // sourceMapFilename: '[name].[contenthash:8].map',
+    // chunkFilename: '[id].[contenthash:8].js',
     library: {
       name: 'sen',
       type: 'umd',
@@ -34,10 +34,6 @@ module.exports = {
   ],
   module: {
     rules: [
-      {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      },
       {
         test: /\.(js)$/,
         exclude: /node_modules/,

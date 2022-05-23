@@ -144,7 +144,7 @@ export async function enableWeb3() {
   }
   const mobileArgs = {
     provider: 'walletconnect',
-    mobileLinks: ['metamusk', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
+    mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
   }
   const desktopArgs = {}
   const agrs = { ...basicArgs, ...(window.mobileAndTabletCheck() ? mobileArgs : desktopArgs) }
