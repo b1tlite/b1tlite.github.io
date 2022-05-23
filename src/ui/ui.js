@@ -10,10 +10,12 @@ import {
   getNFTDropsOwnedByUser,
 } from '../web3Api'
 import { bindActions as bindActionsKids, loadNfts } from './nftKids'
+import { initReact } from './react'
 
 export async function initialize(project = 'nftKids') {
   switch (project) {
     case 'nftKids':
+      // initReact()
       bindActionsKids()
       initializeMoralis()
       // checkIfAlreadyConnected()

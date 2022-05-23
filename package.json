@@ -11,8 +11,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.17.10",
-    "@babel/preset-env": "^7.17.10",
+    "@babel/core": "^7.18.0",
+    "@babel/preset-env": "^7.18.0",
+    "@babel/preset-react": "^7.17.12",
     "babel-loader": "^8.2.5",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
@@ -20,8 +21,20 @@
   },
   "dependencies": {
     "@thirdweb-dev/sdk": "^2.2.11",
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
+    "crypto-browserify": "^3.12.0",
     "ethereum-blockies-png": "^0.1.3",
-    "moralis": "^1.6.0",
-    "three": "^0.140.2"
+    "https-browserify": "^1.0.0",
+    "magic-sdk": "^8.1.1",
+    "moralis": "^1.7.0",
+    "os-browserify": "^0.3.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-moralis": "^1.3.5",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "three": "^0.140.2",
+    "web3uikit": "^0.1.149"
   }
 }

@@ -117,7 +117,8 @@ export async function AddPolygonChain() {
 export async function enableWeb3() {
   // if (!Moralis.isWeb3Enabled()) {
   console.log('Connecting')
-  await Moralis.enableWeb3()
+  // await Moralis.enableWeb3()
+  await Moralis.authenticate({signingMessage:"Hello and welcome to oour awesome project. Please sign this message to authenticate. It won't cost you any gas!"})
   console.log('Connected')
   // } else {
   // console.log('Already connected')

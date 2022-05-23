@@ -6,6 +6,8 @@ import {
   buyNft,
   bindOnWeb3Enabled,
   bindOnWeb33Deactivated,
+  connect,
+  disconnect,
 } from '../web3Api'
 import { capitalizeFirstLetter } from './utils'
 
@@ -155,10 +157,10 @@ function getUIElements() {
 export function bindActions() {
   const connectButton = document.querySelector('.connectwalletbutton')
   const connectButtontext = document.querySelector('.headerbuttontext')
-  connectButton.onclick = enableWeb3
+  connectButton.onclick = connect
 
   const loadmoreButton = getLoadMoreButton()
-  loadmoreButton.onclick = handleLoadMore
+  loadmoreButton.onclick = disconnect
 
   // Subscribe to onWeb3Enabled events
   bindOnWeb3Enabled((result) => {
