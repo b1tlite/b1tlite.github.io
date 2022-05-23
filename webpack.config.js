@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   entry: path.resolve(__dirname, 'src/index.js'),
@@ -16,14 +17,21 @@ module.exports = {
       crypto: require.resolve('crypto-browserify'),
     },
   },
+
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.bundle.js',
+    sourceMapFilename: '[name].[contenthash:8].map',
+    chunkFilename: '[id].[contenthash:8].js',
     library: {
       name: 'sen',
       type: 'umd',
     },
   },
+  plugins: [
+    new webpack.ProvidePlugin({ process: 'process/browser' }),
+    new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
+  ],
   module: {
     rules: [
       {
@@ -47,8 +55,8 @@ module.exports = {
     ],
   },
   mode: 'development',
-  watch: true,
   devtool: 'source-map',
+  watch: true,
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
