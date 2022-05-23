@@ -5,8 +5,7 @@ const sen = {
     connect, // Promise => send request to connect user wallet
     disconnect, // Promise =>
     getEditionNfts, // Promise => returns all [editiontNft] from edition
-    getMarketListings, // getNfts // I'm going to deprecate 'getNfts' so it will be more clear
-    getNfts, // [going to be depracated] (onlyAvaliable = true) => Promise => [marketListing] returns nft listings from market
+    getMarketListings, // [going to be depracated] (onlyAvaliable = true) => Promise => [marketListing] returns nft listings from market
     // It now has (onlyAvaliable = true) argument by default,
     // but u can pass 'false' to get all items and filter it by yourself
     // It now also adds additinal fields for all [marketListing] for filter purposes
@@ -26,9 +25,9 @@ const sen = {
     //@returns - an array of results containing the id of the token claimed, the transaction receipt and a promise to optionally fetch the nft metadata
     getNFTDropInfo, // Promise => { totalSupply, totalUnclaimedSupply }
     getNFTDropsOwnedByUser, // Promise => [nftDrop] // returns users 'inventory' from drop // needs connected wallet
-    getUserBlockieImageDataUrl, // Promise => returns DataUrl of blockie image of current User address
+    // not implemented yet // getUserBlockieImageDataUrl, // Promise => returns DataUrl of blockie image of current User address
     // => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgC..."
-    getUserBlockieImageBuffer, // Promise => return byte array (buffer) of blockie image of current User address
+    // not implemented yet // getUserBlockieImageBuffer, // Promise => return byte array (buffer) of blockie image of current User address
     // => fs.writeFileSync('out.png', buffer)
   },
   three: {
@@ -80,6 +79,25 @@ window.addEventListener(
   (e) => {
     const { detail } = e
     const chainId = detail
+    // your code
+  },
+  false
+)
+
+// called after chain changed
+window.addEventListener(
+  'onWalletAuthenticated',
+  (e) => {
+    const { detail } = e
+    const account = detail
+    // your code
+  },
+  false
+)
+// called after chain changed
+window.addEventListener(
+  'onWalletAuthenticationFailed',
+  (e) => {
     // your code
   },
   false

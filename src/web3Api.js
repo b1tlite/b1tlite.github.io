@@ -1,12 +1,43 @@
 import { ThirdwebSDK } from '@thirdweb-dev/sdk'
 // import blockies from 'ethereum-blockies-png'
 import Moralis from 'moralis/dist/moralis.min.js'
-import { toDateTime } from './ui/utils'
+import { toDateTime } from './utils'
 const ethers = Moralis.web3Library
 const WalletConnectProvider = require('@walletconnect/web3-provider/dist/umd/index.min.js')
 // import WalletConnectProvider from "@walletconnect/web3-provider";
 // window.WalletConnectProvider = WalletConnectProvider
-
+function checkAndFixNetwork2(provider) {
+  function addPolygonChain(provider) {
+    console.log('addPolygonChain')
+    return provider.send('wallet_addEthereumChain', [
+      {
+        chainId: '0x89',
+        chainName: 'Polygon Mainnet',
+        rpcUrls: ['https://polygon-rpc.com'],
+        nativeCurrency: {
+          name: 'Matic',
+          symbol: 'MATIC',
+          decimals: 18,
+        },
+        blockExplorerUrls: ['https://polygonscan.com/'],
+      },
+    ])
+  }
+  console.log('checkAndFixNetwork')
+  try {
+    return provider.send('wallet_switchEthereumChain', [{ chainId: '0x89' }])
+  } catch (error) {
+    console.log('checkAndFixNetwork', 'error while switching the network')
+    if (error.code === 4902) {
+      try {
+        console.log('checkAndFixNetwork', 'network not found')
+        return addPolygonChain(provider)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+}
 window.mobileAndTabletCheck = function () {
   let check = false
   ;(function (a) {

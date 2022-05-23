@@ -9,7 +9,7 @@ import {
   connect,
   disconnect,
 } from '../web3Api'
-import { capitalizeFirstLetter } from './utils'
+import { capitalizeFirstLetter } from '../utils'
 
 const ITEMS_PER_PAGE = 6
 const ITEMS_PER_ROW = 3
@@ -85,7 +85,7 @@ function hideLoader(nfts) {
   return nfts
 }
 function showNftGallery(nfts) {
-  const { container} = getUIElements()
+  const { container } = getUIElements()
   container.style.display = 'flex'
   return nfts
 }

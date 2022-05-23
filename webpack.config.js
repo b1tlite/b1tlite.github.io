@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
-
+const devMode = process.env.NODE_ENV !== 'production'
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 module.exports = {
   entry: path.resolve(__dirname, 'src/index.js'),
   resolve: {
@@ -31,9 +32,13 @@ module.exports = {
   plugins: [
     new webpack.ProvidePlugin({ process: 'process/browser' }),
     new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
-  ],
+  ].concat(devMode ? [] : [new MiniCssExtractPlugin()]),
   module: {
     rules: [
+      {
+        test: /\.(sa|sc|c)ss$/i,
+        use: [devMode ? 'style-loader' : MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
+      },
       {
         test: /\.(js)$/,
         exclude: /node_modules/,
@@ -52,7 +57,7 @@ module.exports = {
   },
   mode: 'development',
   devtool: 'source-map',
-  watch: true,
+  watch: !!devMode,
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
