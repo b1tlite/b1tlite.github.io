@@ -21,18 +21,36 @@ const funcs = [
 // and create all functions in window.senInner
 initReact()
 /////////
-
 const web3 = {}
 funcs.forEach((funcName) => {
   web3[funcName] = function () {
-    if (!window.senInner) {
-      throw new Error('No senInner. Inner lib error.')
-    }
-    if (!window.senInner[funcName]) {
-      throw new Error('No window.senInner[funcName]. Inner lib error.', funcName)
-    }
+    const incomingArgs = arguments
+    const isReady = window.senInner && window.senInner[funcName]
+    function execute() {
+      if (!window.senInner) {
+        throw new Error('No senInner. Inner lib error.')
+      }
+      if (!window.senInner[funcName]) {
+        throw new Error('No window.senInner[funcName]. Inner lib error.', funcName)
+      }
 
-    return window.senInner[funcName].apply(null, arguments)
+      return window.senInner[funcName].apply(null, incomingArgs)
+    }
+    if (!isReady) {
+      return new Promise((res, rej) => {
+        if (isReady) {
+          res(execute())
+        }
+        window.addEventListener(
+          'onSenReady',
+          () => {
+            res(execute())
+          },
+          false
+        )
+      })
+    }
+    return execute()
   }
 })
 

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import { useChain, useMoralis } from 'react-moralis'
 import { WalletModal } from 'web3uikit'
 
@@ -10,6 +10,8 @@ import { getTWSdk, getTWMarketplace, getTWNFTDrop, getTWEdition } from '../code/
 import { initialize as initializeForMintProject } from '../projects/mintProject'
 import { initialize as initializeForKidsProject } from '../projects/nftKidsProject'
 import { toDateTime } from '../code/utils'
+import { useSenReadyEvent } from '../hooks/useSenReadyEvent'
+import { catchWalletOperationErrors } from '../code/catchWalletOperationErrors'
 
 export function App() {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false)
@@ -44,6 +46,7 @@ export function App() {
   }
   const { switchNetwork, chainId, chain } = useChain()
   const notifier = useNotifier()
+  useSenReadyEvent()
   useMoralisEventsForward(Moralis, authState, notifier)
   const getProvider = useCallback(
     async (isReadOnly = false) => {
@@ -93,20 +96,21 @@ export function App() {
         })(navigator.userAgent || navigator.vendor || window.opera)
         return check
       }
-      if (isWeb3EnableLoading) {
-        notifier.warning('Web3 request has been already sent')
-        throw new Error('Web3 request has been already sent')
+      if (isWeb3EnableLoading || isAuthenticating) {
+        notifier.warning('Wallet connection request has been already sent')
+        throw new Error('Wallet connection request has been already sent')
       }
-      if (isWeb3Enabled) {
-        notifier.warning('Web3 already enabled')
-        throw new Error('Web3 already enabled')
+      if (isWeb3Enabled && isAuthenticated) {
+        // notifier.warning('Wallet is already authenticated and connected')
+        throw new Error('Wallet is already authenticated and connected')
       }
       // console.log(isWeb3Enabled, isWeb3EnableLoading, web3EnableError)
       // console.log('mobileAndTabletCheck', mobileAndTabletCheck())
       const isDesktop = !mobileAndTabletCheck()
       if (isDesktop) {
         setIsWalletModalOpen(true)
-      } else { // for metamask browser
+      } else {
+        // for metamask browser
         const mobileArgs = {
           chainId: 137,
           signingMessage:
@@ -307,13 +311,4 @@ export function App() {
       />
     </>
   )
-}
-function catchWalletOperationErrors(err) {
-  console.error(err)
-  if (err.reason.includes('insufficient funds')) {
-    window.sen.notifier.warning('No enought funds in your wallet!')
-  } else if (err) {
-    window.sen.notifier.warning('Unknown error occured, check console for more.')
-    throw new Error(err)
-  }
 }
