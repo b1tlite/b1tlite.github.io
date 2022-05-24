@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { MoralisProvider, useChain, useMoralis } from 'react-moralis'
+import React, { useState, useCallback, useEffect } from 'react'
+import { useChain, useMoralis } from 'react-moralis'
 import { WalletModal } from 'web3uikit'
 
-import AWN from 'awesome-notifications'
-import 'awesome-notifications/dist/style.css'
-
-import { toDateTime } from '../utils'
 import { useFunctionBinding } from '../hooks/useFunctionBinding'
-import { usePrevious } from '../hooks/usePrevious'
-import { getTWSdk, getTWMarketplace, getTWNFTDrop, getTWEdition } from '../thirdWebUtils'
+import { useMoralisEventsForward } from '../hooks/useMoralisEventsForward'
+import { useNotifier } from '../hooks/useNotifier'
+
+import { getTWSdk, getTWMarketplace, getTWNFTDrop, getTWEdition } from '../code/thirdWebUtils'
+import { initialize as initializeForMintProject } from '../projects/mintProject'
+import { initialize as initializeForKidsProject } from '../projects/nftKidsProject'
+import { toDateTime } from '../code/utils'
 
 export function App() {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false)
@@ -27,7 +28,7 @@ export function App() {
     user,
     // func list
     // enableWeb3,
-    // authenticate,
+    authenticate,
     deactivateWeb3,
     logout,
   } = useMoralis()
@@ -42,8 +43,7 @@ export function App() {
     hasAuthError,
   }
   const { switchNetwork, chainId, chain } = useChain()
-  const notifyOptions = { icons: { enabled: false }, durations: { warning: 1000 * 6, info: 1000 * 3 } }
-  const notifier = useRef(new AWN(notifyOptions))
+  const notifier = useNotifier()
   useMoralisEventsForward(Moralis, authState, notifier)
   const getProvider = useCallback(
     async (isReadOnly = false) => {
@@ -70,7 +70,7 @@ export function App() {
         return web3
       }
       connect()
-      notifier.current.warning('Connect wallet first!')
+      notifier.warning('Connect wallet first!')
       throw new Error('Connect wallet first!')
     },
     [connect, ethers, web3, isWeb3Enabled]
@@ -94,32 +94,44 @@ export function App() {
         return check
       }
       if (isWeb3EnableLoading) {
-        notifier.current.warning('Web3 request has been already sent')
+        notifier.warning('Web3 request has been already sent')
         throw new Error('Web3 request has been already sent')
       }
       if (isWeb3Enabled) {
-        notifier.current.warning('Web3 already enabled')
+        notifier.warning('Web3 already enabled')
         throw new Error('Web3 already enabled')
       }
       // console.log(isWeb3Enabled, isWeb3EnableLoading, web3EnableError)
       // console.log('mobileAndTabletCheck', mobileAndTabletCheck())
-      setIsWalletModalOpen(true)
-      // enableWeb3()
+      const isDesktop = !mobileAndTabletCheck()
+      if (isDesktop) {
+        setIsWalletModalOpen(true)
+      } else { // for metamask browser
+        const mobileArgs = {
+          chainId: 137,
+          signingMessage:
+            "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
+          provider: 'walletconnect',
+          mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
+        }
+
+        return authenticate(mobileArgs)
+      }
     },
-    [isWeb3Enabled, isWeb3EnableLoading, web3EnableError]
+    [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
   )
-  useFunctionBinding(
+  const disconnect = useFunctionBinding(
     'disconnect',
     () => {
       if (!isWeb3Enabled && !isAuthenticated) {
-        notifier.current.warning('Already logged out')
+        notifier.warning('Already logged out')
         throw new Error('Already logged out')
       }
       return deactivateWeb3().then(logout)
     },
     [deactivateWeb3]
   )
-  useFunctionBinding(
+  const getMarketListings = useFunctionBinding(
     'getMarketListings',
     (onlyAvaliable = true) => {
       console.log('getMarketListings', onlyAvaliable)
@@ -162,6 +174,7 @@ export function App() {
             console.log('mintNFTFromDrop', res)
             return res
           })
+          .catch(catchWalletOperationErrors)
       )
     },
     [getProvider]
@@ -246,6 +259,7 @@ export function App() {
         .then(getTWSdk)
         .then(getTWMarketplace)
         .then((marketplace) => marketplace.direct.buyoutListing(listingId, quantity))
+        .catch(catchWalletOperationErrors)
     },
     [getProvider]
   )
@@ -256,13 +270,25 @@ export function App() {
     },
     [getEditionNftsOwnedByUser]
   )
+  useFunctionBinding(
+    'initialize',
+    (project = 'nftKids') => {
+      switch (project) {
+        case 'nftKids':
+          initializeForKidsProject()
+          break
+        case 'mintSite':
+          initializeForMintProject()
+          break
+        default:
+          throw new Error('Wrong project name')
+      }
+    },
+    []
+  )
   return (
     <>
-      <MoralisProvider
-        serverUrl="https://6hiqo5aptzjt.usemoralis.com:2053/server"
-        appId="4tLI25e1VFuYR6InpKuVqIp4T6zXSa8pHmrh0BBz"
-      >
-        {/* <p style={{ overflowWrap: 'anywhere' }}>
+      {/* <p style={{ overflowWrap: 'anywhere' }}>
           {JSON.stringify({
             account,
             chainId,
@@ -271,104 +297,23 @@ export function App() {
             user,
           })}
         </p> */}
-        <WalletModal
-          isOpened={isWalletModalOpen}
-          setIsOpened={setIsWalletModalOpen}
-          moralisAuth
-          signingMessage={
-            "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!"
-          }
-        />
-      </MoralisProvider>
+      <WalletModal
+        isOpened={isWalletModalOpen}
+        setIsOpened={setIsWalletModalOpen}
+        moralisAuth
+        signingMessage={
+          "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!"
+        }
+      />
     </>
   )
 }
-function useMoralisEventsForward(Moralis, authState, notifier) {
-  const {
-    account,
-    isWeb3Enabled,
-    isWeb3EnableLoading,
-    web3EnableError,
-    isAuthenticated,
-    isAuthenticating,
-    hasAuthError,
-  } = authState
-
-  const prevAuthState = usePrevious(authState)
-
-  useEffect(() => {
-    if (!prevAuthState) return
-    const isLodingNow = isAuthenticating || isWeb3EnableLoading
-    const wasAlreadyEnabled = prevAuthState.isAuthenticated && prevAuthState.isWeb3Enabled
-    if (wasAlreadyEnabled || isLodingNow) return
-
-    const wasInLoadingStatePrev =
-      // !prevAuthState.isAuthenticated ||
-      prevAuthState.isAuthenticating ||
-      // !prevAuthState.isWeb3Enabled ||
-      prevAuthState.isWeb3EnableLoading
-    // !prevAuthState.account
-    const isReady = isAuthenticated && isWeb3Enabled && account
-
-    if (isReady && wasInLoadingStatePrev) {
-      window.dispatchEvent(new CustomEvent('onWalletAuthenticated'), account)
-      notifier.current.info(`Wallet authenticated: ${account}`)
-    } else if (!isReady && wasInLoadingStatePrev) {
-      window.dispatchEvent(new CustomEvent('onWalletAuthenticationFailed'))
-      notifier.current.warning(`Wallet authentication failed`)
-    }
-  }, [isAuthenticated, isAuthenticating, notifier, account])
-  useEffect(() => {
-    const unSubList = []
-    unSubList.push(
-      Moralis.onWeb3Enabled((result) => {
-        const { account, chainId, connector, web3, provider } = result
-        console.log('onWeb3Enabled', result)
-        window.dispatchEvent(new CustomEvent('onWeb3Enabled'), result)
-        // notifier.current.info(`Wallet connected: ${account}`)
-      })
-    )
-    unSubList.push(
-      Moralis.onWeb3Deactivated((result) => {
-        window.senState.currentAccount = null
-        console.log('onWeb3Deactivated', result)
-        window.dispatchEvent(new CustomEvent('onWeb3Deactivated'), result)
-        notifier.current.info(`Wallet disconnected`)
-      })
-    )
-    unSubList.push(
-      Moralis.onAccountChanged(async function (account) {
-        window.senState.currentAccount = account
-        console.log('onAccountsChanged', account)
-        if (!account) {
-          // account can be null
-          window.dispatchEvent(new CustomEvent('onWeb3Deactivated'), result)
-          notifier.current.info(`Wallet disconnected`)
-        } else {
-          window.dispatchEvent(new CustomEvent('onAccountChanged'), account)
-          notifier.current.info(`Account changed to: ${account}`)
-        }
-      })
-    )
-    unSubList.push(
-      Moralis.onChainChanged(async function (chainId) {
-        window.senState.currentChain = chainId
-        console.log('onChainChanged', chainId)
-        window.dispatchEvent(new CustomEvent('onChainChanged'), chainId)
-        notifier.current.info(`Chain changed to: ${chainId}`)
-      })
-    )
-    return () => {
-      unSubList.forEach((unSub) => {
-        unSub && unSub()
-      })
-    }
-  }, [Moralis])
-  // useEffect(() => {
-  //   if (web3EnableError) {
-  //     console.log('web3EnableError', web3EnableError)
-  //     window.dispatchEvent(new CustomEvent('web3EnableError'), web3EnableError)
-  //     notifier.current.warning(`web3EnableError: ${web3EnableError}`)
-  //   }
-  // }, [web3EnableError])
+function catchWalletOperationErrors(err) {
+  console.error(err)
+  if (err.reason.includes('insufficient funds')) {
+    window.sen.notifier.warning('No enought funds in your wallet!')
+  } else if (err) {
+    window.sen.notifier.warning('Unknown error occured, check console for more.')
+    throw new Error(err)
+  }
 }

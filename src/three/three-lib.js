@@ -5,12 +5,8 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
 import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
 import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
-import { setupHtmlForThree } from './three-ui'
 
 export function runScene() {
-  // const isProduction = process.argv[process.argv.indexOf('--mode') + 1] === 'production'
-
-  // const hostUrl = isProduction ? 'https://b1tlite.github.io/dist/' : ''
   const hostUrl = 'https://b1tlite.github.io/dist/'
   const negxUrl = `${hostUrl}assets/negx.jpg`
   const negyUrl = `${hostUrl}assets/negy.jpg`

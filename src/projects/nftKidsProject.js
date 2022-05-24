@@ -1,22 +1,9 @@
-import Moralis from 'moralis/dist/moralis.min.js'
-import {
-  enableWeb3,
-  disableWeb3,
-  getMarketListings,
-  buyNft,
-  bindOnWeb3Enabled,
-  bindOnWeb33Deactivated,
-  connect,
-  disconnect,
-} from '../web3Api'
-import { capitalizeFirstLetter } from '../utils'
+import { capitalizeFirstLetter } from '../code/utils'
 
 const ITEMS_PER_PAGE = 6
 const ITEMS_PER_ROW = 3
 let currentMaxItemsToDisplay = ITEMS_PER_PAGE
-///////////////////////////////////
-///////////////////////////////////
-// UI
+
 function hideLoadMoreButton() {
   const loadmoreButton = getLoadMoreButton()
   loadmoreButton.style.display = 'none'
@@ -79,7 +66,6 @@ function prepareNftItemElement(nft, mockItem, index) {
   return item
 }
 
-export function onMetamuskNotInstalled() {}
 function hideLoader(nfts) {
   document.querySelector('.nftloader').style.display = 'none'
   return nfts
@@ -96,12 +82,11 @@ function setButtonsLoading(state = true) {}
 function handleBuyClick(e, listingId, quntity = 1) {
   e.preventDefault()
   setButtonsLoading(true)
-  buyNft(listingId, quntity)
-    .catch(console.error)
-    .then(loadNfts)
+  window.sen.web3
+    .buyNft(listingId, quntity)
+    .then(loadNftsToUI)
     .then(saveNFTSToStore)
     .then(() => setButtonsLoading(false))
-    .catch(console.error)
 }
 function handleLoadMore(e) {
   currentMaxItemsToDisplay += ITEMS_PER_PAGE
@@ -117,17 +102,17 @@ function checkIfShouldHideLoadMore(nfts) {
   return nfts
 }
 
-export function loadNfts() {
-  getMarketListings()
-    .then((nfts) => {
-      console.log('Current nfts', nfts)
-      addNftsToUI(nfts)
-      return nfts
+function loadNftsToUI() {
+  return window.sen.web3
+    .getMarketListings()
+    .then((listings) => {
+      console.log('Current listings', listings)
+      addNftsToUI(listings)
+      return listings
     })
     .then(hideLoader)
     .then(checkIfShouldHideLoadMore)
     .then(showNftGallery)
-    .catch(console.error)
 }
 ///////////////////////////////////
 ///////////////////////////////////
@@ -154,22 +139,36 @@ function getUIElements() {
 
   return { container: window.mockElements.container, row: window.mockElements.row, item: window.mockElements.item }
 }
-export function bindActions() {
+function bindActions() {
   const connectButton = document.querySelector('.connectwalletbutton')
   const connectButtontext = document.querySelector('.headerbuttontext')
-  connectButton.onclick = connect
+  connectButton.onclick = window.sen.web3.connect
 
-  const loadmoreButton = getLoadMoreButton()
-  loadmoreButton.onclick = disconnect
+  // const loadmoreButton = getLoadMoreButton()
+  // loadmoreButton.onclick = disconnect
 
   // Subscribe to onWeb3Enabled events
-  bindOnWeb3Enabled((result) => {
-    connectButtontext.innerHTML = `Disconnect wallet`
-    // connectButton.innerHTML = `Connected as ${account}`
-    connectButton.onclick = disableWeb3
-  })
-  bindOnWeb33Deactivated((result) => {
-    connectButtontext.innerHTML = 'Connect wallet'
-    connectButton.onclick = enableWeb3
-  })
+  window.addEventListener(
+    'onWalletAuthenticated',
+    (e) => {
+      connectButtontext.innerHTML = `Disconnect wallet`
+      // connectButton.innerHTML = `Connected as ${account}`
+      connectButton.onclick = window.sen.web3.disconnect
+    },
+    false
+  )
+
+  window.addEventListener(
+    'onWeb3Deactivated',
+    (e) => {
+      connectButtontext.innerHTML = 'Connect wallet'
+      connectButton.onclick = window.sen.web3.connect
+    },
+    false
+  )
+}
+
+export function initialize() {
+  bindActions()
+  loadNftsToUI()
 }

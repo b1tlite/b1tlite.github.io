@@ -1,21 +1,4 @@
-import { runScene } from './three/three-lib'
 import { initReact } from './react'
-import { initialize } from './ui/ui'
-// import {
-//   buyNft,
-//   getMarketListings,
-//   getNFTsOwnedByUser,
-//   isUserOwnsSomeNfts,
-//   getCurrentUserAddress,
-//   getCurrentUserChain,
-//   connect,
-//   disconnect,
-//   getEditionNfts,
-//   getNFTDropInfo,
-//   getNFTDropsOwnedByUser,
-//   // getUserBlockieImageDataUrl,
-//   // getUserBlockieImageBuffer,
-// } from './web3Api'
 
 const funcs = [
   'isUserOwnsSomeNfts',
@@ -30,44 +13,33 @@ const funcs = [
   'getNFTDropInfo',
   'getNFTDropsOwnedByUser',
   'mintNFTFromDrop',
+  'initialize',
 ]
 
-// const web3 = {
-//   isUserOwnsSomeNfts,
-//   connect,
-//   disconnect,
-//   getNfts: getMarketListings,
-//   getMarketListings,
-//   buyNft,
-//   getNFTsOwnedByUser,
-//   getCurrentUserAddress,
-//   getCurrentUserChain,
-//   getEditionNfts,
-//   getNFTDropInfo,
-//   getNFTDropsOwnedByUser,
-//   // getUserBlockieImageDataUrl,
-//   // getUserBlockieImageBuffer,
-// }
+/////////////////
+// call to get state objects
+// and create all functions in window.senInner
 initReact()
+/////////
 
 const web3 = {}
 funcs.forEach((funcName) => {
   web3[funcName] = function () {
     if (!window.senInner) {
-      throw new Error('No senInner')
+      throw new Error('No senInner. Inner lib error.')
     }
     if (!window.senInner[funcName]) {
-      throw new Error('No window.senInner[funcName]', funcName)
+      throw new Error('No window.senInner[funcName]. Inner lib error.', funcName)
     }
 
-    window.senInner[funcName].apply(null, arguments)
+    return window.senInner[funcName].apply(null, arguments)
   }
 })
 
-const three = { runScene }
+const initialize = web3.initialize
 
-if (window && !window.sen) {
-  window.sen = { initialize, web3, three }
+if (window) {
+  window.sen = window.sen || { web3, initialize }
 }
 
-export { initialize, web3, three }
+export { web3, initialize }
