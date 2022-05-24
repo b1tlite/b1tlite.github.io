@@ -23,7 +23,9 @@ try {
   window.onload = function () {
     initReact()
   }
-} catch {}
+} catch (err) {
+  console.error
+}
 /////////
 const web3 = {}
 funcs.forEach((funcName) => {
