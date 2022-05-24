@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useChain, useMoralis } from 'react-moralis'
 import { WalletModal } from 'web3uikit'
 
@@ -18,6 +18,8 @@ export function App() {
   const {
     // lib
     Moralis,
+    isInitializing,
+    isInitialized,
     web3,
     // states
     account,
@@ -44,9 +46,9 @@ export function App() {
     isAuthenticating,
     hasAuthError,
   }
+
   const { switchNetwork, chainId, chain } = useChain()
   const notifier = useNotifier()
-  useSenReadyEvent()
   useMoralisEventsForward(Moralis, authState, notifier)
   const getProvider = useCallback(
     async (isReadOnly = false) => {
@@ -73,7 +75,6 @@ export function App() {
         return web3
       }
       connect()
-      notifier.warning('Connect wallet first!')
       throw new Error('Connect wallet first!')
     },
     [connect, ethers, web3, isWeb3Enabled]
@@ -290,6 +291,8 @@ export function App() {
     },
     []
   )
+  useSenReadyEvent(isInitialized)
+
   return (
     <>
       {/* <p style={{ overflowWrap: 'anywhere' }}>

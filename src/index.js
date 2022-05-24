@@ -25,7 +25,6 @@ const web3 = {}
 funcs.forEach((funcName) => {
   web3[funcName] = function () {
     const incomingArgs = arguments
-    const isReady = window.senInner && window.senInner[funcName]
     function execute() {
       if (!window.senInner) {
         throw new Error('No senInner. Inner lib error.')
@@ -36,11 +35,9 @@ funcs.forEach((funcName) => {
 
       return window.senInner[funcName].apply(null, incomingArgs)
     }
+    const isReady = window.senInner && window.senInner[funcName]
     if (!isReady) {
       return new Promise((res, rej) => {
-        if (isReady) {
-          res(execute())
-        }
         window.addEventListener(
           'onSenReady',
           () => {
