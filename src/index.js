@@ -19,7 +19,11 @@ const funcs = [
 /////////////////
 // call to get state objects
 // and create all functions in window.senInner
-initReact()
+try {
+  window.onload = function () {
+    initReact()
+  }
+} catch {}
 /////////
 const web3 = {}
 funcs.forEach((funcName) => {
