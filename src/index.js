@@ -1,4 +1,7 @@
 import { initReact } from './react'
+import * as Sentry from '@sentry/browser'
+import { BrowserTracing } from '@sentry/tracing'
+import { CaptureConsole } from '@sentry/integrations'
 
 const funcs = [
   'connect',
@@ -22,8 +25,26 @@ try {
   window.onload = function () {
     initReact()
   }
+
+  Sentry.init({
+    dsn: 'https://60faa44ac9024414927e9905b8ff6046@o1262208.ingest.sentry.io/6440773',
+    integrations: [new BrowserTracing()],
+
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    maxBreadcrumbs: 40,
+    debug: true,
+    tracesSampleRate: 1.0,
+    release: '1',
+    integrations: [
+      new CaptureConsole({
+        levels: ['log', 'info', 'warn', 'error', 'debug', 'assert'],
+      }),
+    ],
+  })
 } catch (err) {
-  console.error
+  console.error(err)
 }
 /////////
 const web3 = {}

@@ -73,7 +73,7 @@ export function App() {
     if (isWeb3Enabled && isAuthenticated) {
       console.log('Getting moralis inner provider')
       const isMobile = mobileAndTabletCheck()
-      notifier.tip('inner ' + isMobile)
+      notifier.tip('inner ' + isMobile + '   ' + !!web3.getSigner())
       return isMobile
         ? web3
         : new Promise((res, rej) => {
