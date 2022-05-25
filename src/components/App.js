@@ -126,8 +126,13 @@ export function App() {
       // }
 
       // return authenticate()
-
-      return authenticate(basicArgs).catch(() => setIsWalletModalOpen(true))
+      setIsWalletModalOpen(true)
+      function onAuthSucc() {
+        setIsWalletModalOpen(false)
+        window.removeEventListener('onWalletAuthenticated', onAuthSucc)
+      }
+      window.addEventListener('onWalletAuthenticated', onAuthSucc, false)
+      return authenticate(basicArgs).then(onAuthSucc)
       // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
