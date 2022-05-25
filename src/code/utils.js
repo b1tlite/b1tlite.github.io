@@ -13,3 +13,9 @@ export function getRootElement(id, isHidden) {
   document.body.append(root)
   return root
 }
+
+export const dispatchEvent = (name, args) => {
+  setTimeout(() => {
+    window.dispatchEvent(new CustomEvent(name), args)
+  }, 0)
+}

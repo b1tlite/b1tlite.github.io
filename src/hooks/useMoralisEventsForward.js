@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { dispatchEvent } from '../code/utils'
 import { usePrevious } from './usePrevious'
 
 export function useMoralisEventsForward(Moralis, authState, notifier) {
@@ -30,28 +31,27 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
 
     if (isReady && wasInLoadingStatePrev) {
       console.log('onWalletAuthenticated', account)
-      window.dispatchEvent(new CustomEvent('onWalletAuthenticated'), account)
+      dispatchEvent('onWalletAuthenticated', account)
       notifier.info(`Wallet authenticated: ${account}`)
     } else if (!isReady && wasInLoadingStatePrev) {
-      window.dispatchEvent(new CustomEvent('onWalletAuthenticationFailed'))
+      dispatchEvent('onWalletAuthenticationFailed')
       // notifier.warning(`Wallet authentication failed`)
     }
   }, [isAuthenticated, isAuthenticating, notifier, account])
-
   useEffect(() => {
     const unSubList = []
     unSubList.push(
       Moralis.onWeb3Enabled((result) => {
         const { account, chainId, connector, web3, provider } = result
         console.log('onWeb3Enabled', result)
-        window.dispatchEvent(new CustomEvent('onWeb3Enabled'), result)
+        dispatchEvent('onWeb3Enabled', result)
         // notifier.info(`Wallet connected: ${account}`)
       })
     )
     unSubList.push(
       Moralis.onWeb3Deactivated((result) => {
         console.log('onWeb3Deactivated', result)
-        window.dispatchEvent(new CustomEvent('onWeb3Deactivated'), result)
+        dispatchEvent('onWeb3Deactivated', result)
         notifier.info(`Wallet disconnected`)
       })
     )
@@ -60,10 +60,10 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
         console.log('onAccountsChanged', account)
         if (!account) {
           // account can be null
-          window.dispatchEvent(new CustomEvent('onWeb3Deactivated'), result)
+          dispatchEvent('onWeb3Deactivated', result)
           notifier.info(`Wallet disconnected`)
         } else {
-          window.dispatchEvent(new CustomEvent('onAccountChanged'), account)
+          dispatchEvent('onAccountChanged', account)
           notifier.info(`Account changed to: ${account}`)
         }
       })
@@ -71,7 +71,7 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
     unSubList.push(
       Moralis.onChainChanged(function (chainId) {
         console.log('onChainChanged', chainId)
-        window.dispatchEvent(new CustomEvent('onChainChanged'), chainId)
+        dispatchEvent('onChainChanged', chainId)
         notifier.info(`Chain changed to: ${chainId}`)
       })
     )
@@ -93,7 +93,7 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
   // useEffect(() => {
   //   if (web3EnableError) {
   //     console.log('web3EnableError', web3EnableError)
-  //     window.dispatchEvent(new CustomEvent('web3EnableError'), web3EnableError)
+  //    dispatchEvent('web3EnableError'), web3EnableError)
   //     notifier.warning(`web3EnableError: ${web3EnableError}`)
   //   }
   // }, [web3EnableError])
