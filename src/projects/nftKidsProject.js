@@ -157,15 +157,15 @@ function bindActions() {
     },
     false
   )
-  window.addEventListener(
-    'onWeb3Enabled',
-    (e) => {
-      connectButtontext.innerHTML = `Disconnect wallet`
-      // connectButton.innerHTML = `Connected as ${account}`
-      connectButton.onclick = window.sen.web3.disconnect
-    },
-    false
-  )
+  // window.addEventListener(
+  //   'onWeb3Enabled',
+  //   (e) => {
+  //     connectButtontext.innerHTML = `Disconnect wallet`
+  //     // connectButton.innerHTML = `Connected as ${account}`
+  //     connectButton.onclick = window.sen.web3.disconnect
+  //   },
+  //   false
+  // )
 
   window.addEventListener(
     'onWeb3Deactivated',

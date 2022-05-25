@@ -33,15 +33,15 @@ function bindActions() {
     },
     false
   )
-  window.addEventListener(
-    'onWeb3Enabled',
-    (e) => {
-      connectButton.innerHTML = `Disconnect`
-      // connectButton.innerHTML = `Connected as ${account}`
-      connectButton.onclick = window.sen.web3.disconnect
-    },
-    false
-  )
+  // window.addEventListener(
+  //   'onWeb3Enabled',
+  //   (e) => {
+  //     connectButton.innerHTML = `Disconnect`
+  //     // connectButton.innerHTML = `Connected as ${account}`
+  //     connectButton.onclick = window.sen.web3.disconnect
+  //   },
+  //   false
+  // )
   window.addEventListener(
     'onWeb3Deactivated',
     (e) => {
