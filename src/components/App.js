@@ -72,21 +72,24 @@ export function App() {
     }
     if (isWeb3Enabled && isAuthenticated) {
       console.log('Getting moralis inner provider')
-      notifier.tip('inner')
-      return new Promise((res, rej) => {
-        switchNetwork('0x89').then(() => {
-          notifier.tip('inner2')
-          notifier.tip(JSON.stringify(web3.getSigner))
-          window.ff = web3
-          res(web3)
-        }).catch((err) => {
-          notifier.tip('inner3')
-          notifier.tip(JSON.stringify(err))
-          notifier.tip(JSON.stringify(web3.getSigner))
-
-          res(web3)
-        })
-      })
+      const isMobile = mobileAndTabletCheck()
+      notifier.tip('inner ' + isMobile)
+      return isMobile
+        ? web3
+        : new Promise((res, rej) => {
+            notifier.tip('inner1.5')
+            switchNetwork('0x89')
+              .then(() => {
+                notifier.tip('inner2')
+              })
+              .catch((err) => {
+                notifier.tip('inner3' + JSON.stringify(err))
+              })
+              .finally(() => {
+                notifier.tip('inner4')
+                res(web3)
+              })
+          })
     }
     notifier.tip('coonect err')
     connect()
