@@ -136,18 +136,19 @@ export function App() {
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
   )
-  const disconnect = useFunctionBinding(
+  useFunctionBinding(
     'disconnect',
     () => {
       if (!isWeb3Enabled && !isAuthenticated) {
-        notifier.warning('Already logged out')
-        throw new Error('Already logged out')
+        // notifier.warning('Already logged out')
+        // throw new Error('Already logged out')
+        console.error('Already logged out')
       }
       return deactivateWeb3().then(logout)
     },
     [deactivateWeb3]
   )
-  const getMarketListings = useFunctionBinding(
+  useFunctionBinding(
     'getMarketListings',
     (onlyAvaliable = true) => {
       console.log('getMarketListings', onlyAvaliable)
@@ -278,13 +279,6 @@ export function App() {
         .catch(catchWalletOperationErrors)
     },
     [getProvider]
-  )
-  useFunctionBinding(
-    'isUserOwnsSomeNfts',
-    () => {
-      return getNFTsOwnedByUser().then((nfts) => !!(nfts && nfts.length && nfts.length > 0))
-    },
-    [getEditionNftsOwnedByUser]
   )
   useFunctionBinding(
     'initialize',

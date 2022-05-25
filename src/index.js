@@ -1,7 +1,6 @@
 import { initReact } from './react'
 
 const funcs = [
-  'isUserOwnsSomeNfts',
   'connect',
   'disconnect',
   'getMarketListings',
