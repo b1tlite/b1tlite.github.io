@@ -56,7 +56,7 @@ export function App() {
       return window.ethereum && new ethers.providers.Web3Provider(window.ethereum)
     }
     function getInfuraProvider() {
-      notifier.tip('infura')
+      // notifier.tip('infura')
       // console.log('Getting infura provider')
       const NODE_URL =
         // 'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
@@ -65,7 +65,7 @@ export function App() {
     }
     if (isReadOnly) {
       console.log('Getting readonly provider')
-      notifier.tip('readonly')
+      // notifier.tip('readonly')
       return web3 || getInfuraProvider()
       // || getWeb3WindowEthereumProvider()
       // || ethers.getDefaultProvider()
@@ -73,25 +73,17 @@ export function App() {
     if (isWeb3Enabled && isAuthenticated) {
       console.log('Getting moralis inner provider')
       const isMobile = mobileAndTabletCheck()
-      notifier.tip('inner ' + isMobile + '   ' + !!web3.getSigner())
+      // notifier.tip('inner ' + isMobile + '   ' + !!web3.getSigner())
       return isMobile
-        ? web3
+        ? web3 || getInfuraProvider()
         : new Promise((res, rej) => {
-            notifier.tip('inner1.5')
-            switchNetwork('0x89')
-              .then(() => {
-                notifier.tip('inner2')
-              })
-              .catch((err) => {
-                notifier.tip('inner3' + JSON.stringify(err))
-              })
-              .finally(() => {
-                notifier.tip('inner4')
-                res(web3)
-              })
+            switchNetwork('0x89').catch(console.error).finally(() => {
+              // notifier.tip('inner4')
+              res(web3)
+            })
           })
     }
-    notifier.tip('coonect err')
+    // notifier.tip('coonect err')
     connect()
     throw new Error('Connect wallet first!')
   }
