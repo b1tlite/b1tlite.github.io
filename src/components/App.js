@@ -120,7 +120,7 @@ export function App() {
       //   mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
       // }
 
-      // return authenticate(mobileArgs)
+      return authenticate()
       // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
