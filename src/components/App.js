@@ -109,9 +109,14 @@ export function App() {
       // console.log('mobileAndTabletCheck', mobileAndTabletCheck())
       // const isDesktop = !mobileAndTabletCheck()
       // if (isDesktop) {
-      
+
       // } else {
       // // for metamask browser
+      const basicArgs = {
+        chainId: 137,
+        signingMessage:
+          "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
+      }
       // const mobileArgs = {
       //   chainId: 137,
       //   signingMessage:
@@ -122,7 +127,7 @@ export function App() {
 
       // return authenticate()
 
-      return authenticate().catch(() => setIsWalletModalOpen(true))
+      return authenticate(basicArgs).catch(() => setIsWalletModalOpen(true))
       // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
