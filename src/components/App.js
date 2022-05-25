@@ -50,37 +50,7 @@ export function App() {
   const { switchNetwork, chainId, chain } = useChain()
   const notifier = useNotifier()
   useMoralisEventsForward(Moralis, authState, notifier)
-  const getProvider = useCallback(
-    async (isReadOnly = false) => {
-      function getWeb3WindowEthereumProvider() {
-        return window.ethereum && new ethers.providers.Web3Provider(window.ethereum)
-      }
-      function getInfuraProvider() {
-        // console.log('Getting infura provider')
-        const NODE_URL =
-          // 'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
-          'https://polygon-mainnet.infura.io/v3/6098af69afc940cd9070ab6d774436ea'
-        return NODE_URL && new ethers.providers.JsonRpcProvider(NODE_URL)
-      }
-      if (isReadOnly) {
-        console.log('Getting readonly provider')
-        return web3 || getInfuraProvider()
-        // || getWeb3WindowEthereumProvider()
-        // || ethers.getDefaultProvider()
-      }
-      if (isWeb3Enabled || isAuthenticated) {
-        console.log('Getting moralis inner provider')
-        // checkAndFixNetwork(web3)
-        switchNetwork('0x89')
-        return web3
-      }
-      notifier.warning('Connect wallet first!')
-      connect()
-      // console.error('Connect wallet first!')
-      throw new Error('Connect wallet first!')
-    },
-    [connect, ethers, web3, isWeb3Enabled, isAuthenticated]
-  )
+
   const connect = useFunctionBinding(
     'connect',
     () => {
@@ -302,7 +272,37 @@ export function App() {
     []
   )
   useSenReadyEvent(isInitialized)
-
+  const getProvider = useCallback(
+    async (isReadOnly = false) => {
+      function getWeb3WindowEthereumProvider() {
+        return window.ethereum && new ethers.providers.Web3Provider(window.ethereum)
+      }
+      function getInfuraProvider() {
+        // console.log('Getting infura provider')
+        const NODE_URL =
+          // 'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
+          'https://polygon-mainnet.infura.io/v3/6098af69afc940cd9070ab6d774436ea'
+        return NODE_URL && new ethers.providers.JsonRpcProvider(NODE_URL)
+      }
+      if (isReadOnly) {
+        console.log('Getting readonly provider')
+        return web3 || getInfuraProvider()
+        // || getWeb3WindowEthereumProvider()
+        // || ethers.getDefaultProvider()
+      }
+      if (isWeb3Enabled && isAuthenticated) {
+        console.log('Getting moralis inner provider')
+        // checkAndFixNetwork(web3)
+        switchNetwork('0x89')
+        return web3
+      }
+      // notifier.warning('Connect wallet first!')
+      // connect()
+      // console.error('Connect wallet first!')
+      throw new Error('Connect wallet first!')
+    },
+    [connect, ethers, web3, isWeb3Enabled, isAuthenticated]
+  )
   return (
     <>
       {/* <p style={{ overflowWrap: 'anywhere' }}>
