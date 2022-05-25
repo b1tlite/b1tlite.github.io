@@ -75,7 +75,7 @@ export function App() {
       return web3
     }
     notifier.warning('Connect wallet first!')
-    // connect()
+    connect()
     // console.error('Connect wallet first!')
     throw new Error('Connect wallet first!')
   }
