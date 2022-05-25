@@ -3,7 +3,7 @@ import { useEffect, useCallback } from 'react'
 export function useFunctionBinding(funcName, funcBody, dependencies) {
   const wrapperFunctionBody = useCallback(
     (...args) => {
-      console.log(funcName, args)
+      console.log('Called from react:', funcName, args)
       if (!funcBody) {
         throw new Error(`No function body! ${funcName}`)
       }

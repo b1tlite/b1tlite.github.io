@@ -38,6 +38,7 @@ funcs.forEach((funcName) => {
         throw new Error('No window.senInner[funcName]. Inner lib error.', funcName)
       }
 
+      console.log('Called from index:', funcName, incomingArgs)
       return window.senInner[funcName].apply(null, incomingArgs)
     }
     const isReady = window.senInner && window.senInner[funcName]

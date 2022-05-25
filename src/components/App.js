@@ -68,7 +68,7 @@ export function App() {
         // || getWeb3WindowEthereumProvider()
         // || ethers.getDefaultProvider()
       }
-      if (isWeb3Enabled) {
+      if (isWeb3Enabled && isAuthenticated) {
         console.log('Getting moralis inner provider')
         // checkAndFixNetwork(web3)
         switchNetwork('0x89')
@@ -98,12 +98,14 @@ export function App() {
         return check
       }
       if (isWeb3EnableLoading || isAuthenticating) {
-        notifier.warning('Wallet connection request has been already sent')
-        throw new Error('Wallet connection request has been already sent')
+        // notifier.warning('Wallet connection request has been already sent')
+        // throw new Error('Wallet connection request has been already sent')
+        console.log('Wallet connection request has been already sent')
       }
       if (isWeb3Enabled && isAuthenticated) {
         // notifier.warning('Wallet is already authenticated and connected')
-        throw new Error('Wallet is already authenticated and connected')
+        // throw new Error('Wallet is already authenticated and connected')
+        console.error('Wallet is already authenticated and connected')
       }
       // console.log(isWeb3Enabled, isWeb3EnableLoading, web3EnableError)
       // console.log('mobileAndTabletCheck', mobileAndTabletCheck())
@@ -255,7 +257,7 @@ export function App() {
     },
     [chain]
   )
-  const getEditionNftsOwnedByUser = useFunctionBinding(
+  useFunctionBinding(
     'getEditionNftsOwnedByUser',
     () => {
       return getProvider() // not readonly to require user to connect wallet before
@@ -265,7 +267,7 @@ export function App() {
         .then((nfts) => {
           console.log('getEditionNftsOwnedByUser', nfts)
           return nfts
-        })
+        }).catch(console.error)
     },
     [getProvider, account]
   )
