@@ -107,21 +107,21 @@ export function App() {
       }
       // console.log(isWeb3Enabled, isWeb3EnableLoading, web3EnableError)
       // console.log('mobileAndTabletCheck', mobileAndTabletCheck())
-      const isDesktop = !mobileAndTabletCheck()
-      if (isDesktop) {
-        setIsWalletModalOpen(true)
-      } else {
-        // for metamask browser
-        const mobileArgs = {
-          chainId: 137,
-          signingMessage:
-            "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
-          provider: 'walletconnect',
-          mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
-        }
+      // const isDesktop = !mobileAndTabletCheck()
+      // if (isDesktop) {
+      setIsWalletModalOpen(true)
+      // } else {
+      // // for metamask browser
+      // const mobileArgs = {
+      //   chainId: 137,
+      //   signingMessage:
+      //     "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
+      //   provider: 'walletconnect',
+      //   mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
+      // }
 
-        return authenticate(mobileArgs)
-      }
+      // return authenticate(mobileArgs)
+      // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
   )
