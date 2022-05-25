@@ -148,15 +148,11 @@ function bindActions() {
   // loadmoreButton.onclick = disconnect
 
   // Subscribe to onWeb3Enabled events
-  window.addEventListener(
-    'onWalletAuthenticated',
-    (e) => {
-      connectButtontext.innerHTML = `Disconnect wallet`
-      // connectButton.innerHTML = `Connected as ${account}`
-      connectButton.onclick = window.sen.web3.disconnect
-    },
-    false
-  )
+  window.addEventListener('onWalletAuthenticated', (e) => {
+    connectButtontext.innerHTML = `Disconnect wallet`
+    // connectButton.innerHTML = `Connected as ${account}`
+    connectButton.onclick = window.sen.web3.disconnect
+  })
   // window.addEventListener(
   //   'onWeb3Enabled',
   //   (e) => {
@@ -167,14 +163,10 @@ function bindActions() {
   //   false
   // )
 
-  window.addEventListener(
-    'onWeb3Deactivated',
-    (e) => {
-      connectButtontext.innerHTML = 'Connect wallet'
-      connectButton.onclick = window.sen.web3.connect
-    },
-    false
-  )
+  window.addEventListener('onWeb3Deactivated', (e) => {
+    connectButtontext.innerHTML = 'Connect wallet'
+    connectButton.onclick = window.sen.web3.connect
+  })
 }
 
 export function initialize() {

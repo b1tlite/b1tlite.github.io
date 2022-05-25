@@ -127,12 +127,11 @@ export function App() {
 
       // return authenticate()
       setIsWalletModalOpen(true)
-      function onAuthSucc() {
+      window.addEventListener('onWalletAuthenticated', () => {
         setIsWalletModalOpen(false)
-        window.removeEventListener('onWalletAuthenticated', onAuthSucc)
-      }
-      window.addEventListener('onWalletAuthenticated', onAuthSucc, false)
-      authenticate(basicArgs).then(onAuthSucc)
+        // window.removeEventListener('onWalletAuthenticated', onAuthSucc)
+      })
+      authenticate(basicArgs)
       // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
