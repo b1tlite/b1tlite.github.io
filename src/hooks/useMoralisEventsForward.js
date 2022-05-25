@@ -29,6 +29,7 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
     const isReady = isAuthenticated && isWeb3Enabled && account
 
     if (isReady && wasInLoadingStatePrev) {
+      console.log('onWalletAuthenticated', account)
       window.dispatchEvent(new CustomEvent('onWalletAuthenticated'), account)
       notifier.info(`Wallet authenticated: ${account}`)
     } else if (!isReady && wasInLoadingStatePrev) {

@@ -22,7 +22,7 @@ export function useFunctionBinding(funcName, funcBody, dependencies) {
     // console.log('Bind function: ', funcName, inner)
     return () => {
       // console.log('Unbind function: ', funcName, inner)
-      delete inner[funcName]
+      // delete inner[funcName]
     }
   }, [...[wrapperFunctionBody], ...dependencies])
   return wrapperFunctionBody
