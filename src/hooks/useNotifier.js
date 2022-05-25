@@ -3,7 +3,10 @@ import AWN from 'awesome-notifications'
 import 'awesome-notifications/dist/style.css'
 
 export function useNotifier() {
-  const notifyOptions = { icons: { enabled: false }, durations: { warning: 1000 * 6, info: 1000 * 3 } }
+  const notifyOptions = {
+    icons: { enabled: false },
+    durations: { warning: 1000 * 6, info: 1000 * 6, tip: 1000 * 30 },
+  }
   const notifier = useRef(new AWN(notifyOptions))
   useEffect(() => {
     window.sen = window.sen || {}

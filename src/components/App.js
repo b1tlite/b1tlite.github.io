@@ -79,6 +79,12 @@ export function App() {
           notifier.tip(JSON.stringify(web3.getSigner))
           window.ff = web3
           res(web3)
+        }).catch((err) => {
+          notifier.tip('inner3')
+          notifier.tip(JSON.stringify(err))
+          notifier.tip(JSON.stringify(web3.getSigner))
+
+          res(web3)
         })
       })
     }
