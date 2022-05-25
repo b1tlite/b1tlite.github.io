@@ -2,7 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const devMode = process.env.NODE_ENV !== 'production'
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-module.exports = {
+const config = {
   entry: path.resolve(__dirname, 'src/index.js'),
   resolve: {
     fallback: {
@@ -55,9 +55,9 @@ module.exports = {
       },
     ],
   },
-  mode: 'development',
-  devtool: 'source-map',
-  watch: !!devMode,
+  // mode: 'development',
+  // devtool: 'source-map',
+  // watch: !!devMode,
   devServer: {
     static: {
       directory: path.join(__dirname, 'dist'),
@@ -65,4 +65,17 @@ module.exports = {
     compress: true,
     port: 9000,
   },
+}
+
+module.exports = (env, argv) => {
+  if (argv.mode === 'development') {
+    config.devtool = 'source-map'
+    config.watch = true
+  }
+
+  if (argv.mode === 'production') {
+    //...
+  }
+
+  return config
 }
