@@ -1,4 +1,4 @@
-const path = require('path')
+ const path = require('path')
 const webpack = require('webpack')
 const devMode = process.env.NODE_ENV !== 'production'
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -22,8 +22,8 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.bundle.js',
-    // sourceMapFilename: '[name].[contenthash:8].map',
-    // chunkFilename: '[id].[contenthash:8].js',
+    sourceMapFilename: '[name].[contenthash:8].map',
+    chunkFilename: '[id].[contenthash:8].js',
     library: {
       name: 'sen',
       type: 'umd',
@@ -55,8 +55,8 @@ const config = {
       },
     ],
   },
-  // mode: 'development',
-  // devtool: 'source-map',
+  mode: 'development',
+  devtool: 'source-map',
   // watch: !!devMode,
   devServer: {
     static: {
@@ -69,7 +69,7 @@ const config = {
 
 module.exports = (env, argv) => {
   if (argv.mode === 'development') {
-    config.devtool = 'source-map'
+    // config.devtool = 'source-map'
     config.watch = true
   }
 

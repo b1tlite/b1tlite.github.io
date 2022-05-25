@@ -296,7 +296,7 @@ export function App() {
         switchNetwork('0x89')
         return web3
       }
-      // notifier.warning('Connect wallet first!')
+      notifier.warning('Connect wallet first!')
       // connect()
       // console.error('Connect wallet first!')
       throw new Error('Connect wallet first!')
