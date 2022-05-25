@@ -109,7 +109,7 @@ export function App() {
       // console.log('mobileAndTabletCheck', mobileAndTabletCheck())
       // const isDesktop = !mobileAndTabletCheck()
       // if (isDesktop) {
-      setIsWalletModalOpen(true)
+      
       // } else {
       // // for metamask browser
       // const mobileArgs = {
@@ -120,7 +120,9 @@ export function App() {
       //   mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
       // }
 
-      return authenticate()
+      // return authenticate()
+
+      return authenticate().catch(() => setIsWalletModalOpen(true))
       // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
