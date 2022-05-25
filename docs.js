@@ -1,11 +1,10 @@
 const sen = {
   initialize, // (projectName = 'nftKids') => Promise used for html sites to initialize and bind proper actions
   web3: {
-    isUserOwnsSomeNfts, // Promise => returns bool if user has some nfts from collection (only after wallet is connected)
     connect, // Promise => send request to connect user wallet
     disconnect, // Promise =>
     getEditionNfts, // Promise => returns all [editiontNft] from edition
-    getMarketListings, // [going to be depracated] (onlyAvaliable = true) => Promise => [marketListing] returns nft listings from market
+    getMarketListings, // (onlyAvaliable = true) => Promise => [marketListing] returns nft listings from market
     // It now has (onlyAvaliable = true) argument by default,
     // but u can pass 'false' to get all items and filter it by yourself
     // It now also adds additinal fields for all [marketListing] for filter purposes
@@ -18,7 +17,7 @@ const sen = {
     // }
 
     buyNft, // Promise (int/string: listingId <nft.id>, int: countNftsToBuy <from quantity> ) => null (only after wallet is connected)
-    getNFTsOwnedByUser, // Promise => [editiontNft] returns nfts owned by user in our collection
+    getEditionNftsOwnedByUser, // Promise => [editiontNft] returns nfts owned by user in our collection
     getCurrentUserAddress, // returns current user account address
     getCurrentUserChain, // returns chainId
     mintNFTFromDrop, // (quantity = 1) => Promise => 
@@ -29,17 +28,26 @@ const sen = {
     // => "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgC..."
     // not implemented yet // getUserBlockieImageBuffer, // Promise => return byte array (buffer) of blockie image of current User address
     // => fs.writeFileSync('out.png', buffer)
-  },
-  three: {
-    // used for another project
-    runScene, // adds canvas to body and changing <main> styles to absolute to add background
-  },
+  }
 }
 
 // window.senState - internal state object
 // const { ethers, Moralis, ThirdwebSDK, isMoralisStared } = window.senState
 
+
 // called after connect succeed
+window.addEventListener(
+  'onWalletAuthenticated',
+  (e) => {
+    const { detail } = e
+    const account = detail
+    // your code
+  },
+  false
+)
+
+
+// called after web3 connected
 window.addEventListener(
   'onWeb3Enabled',
   (e) => {
@@ -84,21 +92,3 @@ window.addEventListener(
   false
 )
 
-// called after chain changed
-window.addEventListener(
-  'onWalletAuthenticated',
-  (e) => {
-    const { detail } = e
-    const account = detail
-    // your code
-  },
-  false
-)
-// called after chain changed
-window.addEventListener(
-  'onWalletAuthenticationFailed',
-  (e) => {
-    // your code
-  },
-  false
-)
