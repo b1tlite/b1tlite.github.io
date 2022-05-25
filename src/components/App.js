@@ -132,7 +132,7 @@ export function App() {
         window.removeEventListener('onWalletAuthenticated', onAuthSucc)
       }
       window.addEventListener('onWalletAuthenticated', onAuthSucc, false)
-      return authenticate(basicArgs).then(onAuthSucc)
+      authenticate(basicArgs).then(onAuthSucc)
       // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
