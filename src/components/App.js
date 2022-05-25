@@ -70,13 +70,10 @@ export function App() {
     }
     if (isWeb3Enabled && isAuthenticated) {
       console.log('Getting moralis inner provider')
-      // checkAndFixNetwork(web3)
       switchNetwork('0x89')
       return web3
     }
-    notifier.warning('Connect wallet first!')
     connect()
-    // console.error('Connect wallet first!')
     throw new Error('Connect wallet first!')
   }
   const connect = useFunctionBinding(
