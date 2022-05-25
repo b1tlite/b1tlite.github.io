@@ -68,16 +68,18 @@ export function App() {
         // || getWeb3WindowEthereumProvider()
         // || ethers.getDefaultProvider()
       }
-      if (isWeb3Enabled && isAuthenticated) {
+      if (isWeb3Enabled || isAuthenticated) {
         console.log('Getting moralis inner provider')
         // checkAndFixNetwork(web3)
         switchNetwork('0x89')
         return web3
       }
+      notifier.warning('Connect wallet first!')
       connect()
+      // console.error('Connect wallet first!')
       throw new Error('Connect wallet first!')
     },
-    [connect, ethers, web3, isWeb3Enabled]
+    [connect, ethers, web3, isWeb3Enabled, isAuthenticated]
   )
   const connect = useFunctionBinding(
     'connect',
@@ -267,7 +269,8 @@ export function App() {
         .then((nfts) => {
           console.log('getEditionNftsOwnedByUser', nfts)
           return nfts
-        }).catch(console.error)
+        })
+        .catch(console.error)
     },
     [getProvider, account]
   )
