@@ -62,6 +62,8 @@ const config = {
     static: {
       directory: path.join(__dirname, 'dist'),
     },
+    allowedHosts: 'all',
+    host: '0.0.0.0',
     compress: true,
     port: 9000,
   },
