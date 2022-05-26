@@ -45,7 +45,7 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
         const { account, chainId, connector, web3, provider } = result
         console.log('onWeb3Enabled', result)
         dispatchEvent('onWeb3Enabled', result)
-        // notifier.info(`Wallet connected: ${account}`)
+        notifier.info(`Wallet connected: ${account}`)
       })
     )
     unSubList.push(
@@ -64,7 +64,7 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
           notifier.info(`Wallet disconnected`)
         } else {
           dispatchEvent('onAccountChanged', account)
-          notifier.info(`Account changed to: ${account}`)
+          // notifier.info(`Account changed to: ${account}`)
         }
       })
     )
@@ -72,7 +72,7 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
       Moralis.onChainChanged(function (chainId) {
         console.log('onChainChanged', chainId)
         dispatchEvent('onChainChanged', chainId)
-        notifier.info(`Chain changed to: ${chainId}`)
+        // notifier.info(`Chain changed to: ${chainId}`)
       })
     )
     return () => {

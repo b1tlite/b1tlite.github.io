@@ -35,6 +35,7 @@ export function App() {
     authenticate,
     deactivateWeb3,
     logout,
+    enableWeb3,
   } = useMoralis()
   const { web3Library: ethers } = Moralis
   const authState = {
@@ -77,10 +78,12 @@ export function App() {
       return isMobile
         ? web3 || getInfuraProvider()
         : new Promise((res, rej) => {
-            switchNetwork('0x89').catch(console.error).finally(() => {
-              // notifier.tip('inner4')
-              res(web3)
-            })
+            switchNetwork('0x89')
+              .catch(console.error)
+              .finally(() => {
+                // notifier.tip('inner4')
+                res(web3)
+              })
           })
     }
     // notifier.tip('coonect err')
@@ -109,7 +112,7 @@ export function App() {
       // // for metamask browser
       const basicArgs = {
         // chainId: 137,
-        
+
         signingMessage:
           "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
       }
@@ -122,12 +125,49 @@ export function App() {
       // }
 
       // return authenticate()
-      setIsWalletModalOpen(true)
-      window.addEventListener('onWalletAuthenticated', () => {
-        setIsWalletModalOpen(false)
-        // window.removeEventListener('onWalletAuthenticated', onAuthSucc)
-      })
-      return authenticate()
+      // setIsWalletModalOpen(true)
+      // window.addEventListener('onWeb3Enabled', () => {
+      //   // setIsWalletModalOpen(false)
+      //   // window.removeEventListener('onWalletAuthenticated', onAuthSucc)
+      // })
+
+      const baseOptins = {
+        throwOnError: true,
+      }
+      
+      return enableWeb3(baseOptins)
+        .catch(() => {
+          enableWeb3({
+            ...baseOptins,
+            ...{
+              provider: 'metamask',
+            },
+          })
+        })
+        .catch(() => {
+          enableWeb3({
+            ...baseOptins,
+            ...{
+              provider: 'walletconnect',
+            },
+          })
+        })
+        .catch(() => {
+          enableWeb3({
+            ...baseOptins,
+            ...{
+              provider: 'walletConnect',
+            },
+          })
+        })
+        .catch(() => {
+          enableWeb3({
+            ...baseOptins,
+            ...{
+              provider: 'web3Auth',
+            },
+          })
+        })
       // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
@@ -309,7 +349,7 @@ export function App() {
       <WalletModal
         isOpened={isWalletModalOpen}
         setIsOpened={setIsWalletModalOpen}
-        moralisAuth
+        moralisAuth={false}
         signingMessage={
           "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!"
         }
