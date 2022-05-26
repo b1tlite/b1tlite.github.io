@@ -134,10 +134,11 @@ export function App() {
       const baseOptins = {
         throwOnError: true,
       }
-      
+
       return enableWeb3(baseOptins)
         .catch(() => {
-          enableWeb3({
+          notifier.info('1')
+          return enableWeb3({
             ...baseOptins,
             ...{
               provider: 'metamask',
@@ -145,7 +146,8 @@ export function App() {
           })
         })
         .catch(() => {
-          enableWeb3({
+          notifier.info('2')
+          return enableWeb3({
             ...baseOptins,
             ...{
               provider: 'walletconnect',
@@ -153,7 +155,8 @@ export function App() {
           })
         })
         .catch(() => {
-          enableWeb3({
+          notifier.info('3')
+          return enableWeb3({
             ...baseOptins,
             ...{
               provider: 'walletConnect',
@@ -161,12 +164,22 @@ export function App() {
           })
         })
         .catch(() => {
-          enableWeb3({
+          notifier.info('4')
+          return enableWeb3({
             ...baseOptins,
             ...{
               provider: 'web3Auth',
             },
           })
+        })
+        .catch((err) => {
+          notifier.info('5' + JSON.stringify(err))
+        })
+        .then(() => {
+          notifier.info('6')
+        })
+        .finally(() => {
+          notifier.info('7')
         })
       // }
     },

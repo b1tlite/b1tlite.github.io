@@ -6,6 +6,6 @@ export function catchWalletOperationErrors(err) {
     window.sen.notifier.warning('Connect wallet first!')
   } else if (err) {
     window.sen.notifier.warning('Unknown error occured, check console for more. Error: ' + JSON.stringify(err))
-    throw new Error(err)
+    throw new Error(JSON.stringify(err))
   }
 }
