@@ -26,8 +26,15 @@ function bindActions() {
     window.sen.web3.mintNFTFromDrop(1)
   }
 
+  // window.addEventListener(
+  //   'onWalletAuthenticated',
+  //   (e) => {
+  //     openPopup()
+  //   },
+  //   false
+  // )
   window.addEventListener(
-    'onWalletAuthenticated',
+    'onWeb3Enabled',
     (e) => {
       openPopup()
     },
