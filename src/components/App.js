@@ -108,7 +108,7 @@ export function App() {
       // } else {
       // // for metamask browser
       const basicArgs = {
-        chainId: 137,
+        // chainId: 137,
         signingMessage:
           "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
       }
@@ -126,7 +126,7 @@ export function App() {
         setIsWalletModalOpen(false)
         // window.removeEventListener('onWalletAuthenticated', onAuthSucc)
       })
-      authenticate(basicArgs)
+      return authenticate(basicArgs)
       // }
     },
     [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
