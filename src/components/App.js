@@ -71,7 +71,7 @@ export function App() {
       // || getWeb3WindowEthereumProvider()
       // || ethers.getDefaultProvider()
     }
-    if (isWeb3Enabled && isAuthenticated) {
+    if (isWeb3Enabled) {
       console.log('Getting moralis inner provider')
       const isMobile = mobileAndTabletCheck()
       // notifier.tip('inner ' + isMobile + '   ' + !!web3.getSigner())
@@ -87,7 +87,7 @@ export function App() {
           })
     }
     // notifier.tip('coonect err')
-    connect()
+    // connect()
     throw new Error('Connect wallet first!')
   }
   const connect = useFunctionBinding(
