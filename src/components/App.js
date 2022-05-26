@@ -137,7 +137,7 @@ export function App() {
 
       return enableWeb3(baseOptins)
         .catch(() => {
-          notifier.info('1')
+          // notifier.info('1')
           return enableWeb3({
             ...baseOptins,
             ...{
@@ -146,7 +146,7 @@ export function App() {
           })
         })
         .catch(() => {
-          notifier.info('2')
+          // notifier.info('2')
           return enableWeb3({
             ...baseOptins,
             ...{
@@ -155,7 +155,7 @@ export function App() {
           })
         })
         .catch(() => {
-          notifier.info('3')
+          // notifier.info('3')
           return enableWeb3({
             ...baseOptins,
             ...{
@@ -164,7 +164,7 @@ export function App() {
           })
         })
         .catch(() => {
-          notifier.info('4')
+          // notifier.info('4')
           return enableWeb3({
             ...baseOptins,
             ...{
@@ -174,12 +174,7 @@ export function App() {
         })
         .catch((err) => {
           notifier.info('5' + JSON.stringify(err))
-        })
-        .then(() => {
-          notifier.info('6')
-        })
-        .finally(() => {
-          notifier.info('7')
+          console.error(err)
         })
       // }
     },
