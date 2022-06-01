@@ -38,11 +38,11 @@ try {
       debug: true,
       tracesSampleRate: 0.8,
       release: '1',
-      // integrations: [
-      //   new CaptureConsole({
-      //     levels: ['warn', 'error'],
-      //   }),
-      // ],
+      integrations: [
+        new CaptureConsole({
+          levels: ['warn', 'error'],
+        }),
+      ],
     })
   }
 } catch (err) {
