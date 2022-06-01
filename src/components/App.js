@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useChain, useMoralis } from 'react-moralis'
 import { WalletModal } from 'web3uikit'
+import Web3Modal from 'web3modal'
 
 import { useFunctionBinding } from '../hooks/useFunctionBinding'
 import { useMoralisEventsForward } from '../hooks/useMoralisEventsForward'
@@ -12,7 +13,9 @@ import { initialize as initializeForKidsProject } from '../projects/nftKidsProje
 import { mobileAndTabletCheck, toDateTime } from '../code/utils'
 import { useSenReadyEvent } from '../hooks/useSenReadyEvent'
 import { catchWalletOperationErrors } from '../code/catchWalletOperationErrors'
+import WalletConnectProvider from '@walletconnect/web3-provider'
 
+const INFURA_ID = '6098af69afc940cd9070ab6d774436ea'
 export function App() {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false)
   const {
@@ -61,7 +64,7 @@ export function App() {
       // console.log('Getting infura provider')
       const NODE_URL =
         // 'https://speedy-nodes-nyc.moralis.io/9fe8dc8cf64177599a32cb80/polygon/mainnet'
-        'https://polygon-mainnet.infura.io/v3/6098af69afc940cd9070ab6d774436ea'
+        'https://polygon-mainnet.infura.io/v3/' + INFURA_ID
       return NODE_URL && new ethers.providers.JsonRpcProvider(NODE_URL)
     }
     if (isReadOnly) {
@@ -171,6 +174,10 @@ export function App() {
               provider: 'web3Auth',
             },
           })
+        })
+        .catch(() => {
+          notifier.info('6')
+          return authenticate({ provider: 'walletConnect', chainId: 137 })
         })
         .catch((err) => {
           notifier.info('5' + JSON.stringify(err))
@@ -343,17 +350,132 @@ export function App() {
   )
   useSenReadyEvent(isInitialized)
 
+  const providerOptions = {
+    // Example with injected providers
+    // injected: {
+    //   display: {
+    //     name: 'Injected',
+    //     description: 'Connect with the provider in your Browser',
+    //   },
+    //   package: null,
+    // },
+    // Example with WalletConnect provider
+    walletconnect: {
+      // display: {
+      //   name: 'Mobile',
+      //   description: 'Scan qrcode with your mobile wallet',
+      // },
+      package: WalletConnectProvider,
+      options: {
+        infuraId: INFURA_ID, // required
+        rpc: {
+          137: 'https://polygon-mainnet.infura.io/v3/' + INFURA_ID,
+        },
+        network: 'matic',
+      },
+    },
+  }
+  const web3Modal = useRef(
+    new Web3Modal({
+      // network: 'polygon', // optional
+      cacheProvider: false, // optional
+      providerOptions, // required
+    })
+  )
+  // async function fetchAccountData(provider) {
+
+  //   // Get a Web3 instance for the wallet
+  //   const web3 = new Web3(provider);
+
+  //   console.log("Web3 instance is", web3);
+
+  //   // Get connected chain id from Ethereum node
+  //   const chainId = await web3.eth.getChainId();
+  //   // Load chain information over an HTTP API
+  //   const chainData = await EvmChains.getChain(chainId);
+  //   document.querySelector("#network-name").textContent = chainData.name;
+
+  //   // Get list of accounts of the connected wallet
+  //   const accounts = await web3.eth.getAccounts();
+
+  //   // MetaMask does not give you all accounts, only the selected account
+  //   console.log("Got accounts", accounts);
+  //   selectedAccount = accounts[0];
+
+  //   document.querySelector("#selected-account").textContent = selectedAccount;
+
+  //   // Get a handl
+  //   const template = document.querySelector("#template-balance");
+  //   const accountContainer = document.querySelector("#accounts");
+
+  //   // Purge UI elements any previously loaded accounts
+  //   accountContainer.innerHTML = '';
+
+  //   // Go through all accounts and get their ETH balance
+  //   const rowResolvers = accounts.map(async (address) => {
+  //     const balance = await web3.eth.getBalance(address);
+  //     // ethBalance is a BigNumber instance
+  //     // https://github.com/indutny/bn.js/
+  //     const ethBalance = web3.utils.fromWei(balance, "ether");
+  //     const humanFriendlyBalance = parseFloat(ethBalance).toFixed(4);
+  //     // Fill in the templated row and put in the document
+  //     const clone = template.content.cloneNode(true);
+  //     clone.querySelector(".address").textContent = address;
+  //     clone.querySelector(".balance").textContent = humanFriendlyBalance;
+  //     accountContainer.appendChild(clone);
+  //   });
+
+  //   // Because rendering account does its own RPC commucation
+  //   // with Ethereum node, we do not want to display any results
+  //   // until data for all accounts is loaded
+  //   await Promise.all(rowResolvers);
+
+  //   // Display fully loaded UI for wallet data
+  //   document.querySelector("#prepare").style.display = "none";
+  //   document.querySelector("#connected").style.display = "block";
+  // }
   return (
     <>
-      {/* <p style={{ overflowWrap: 'anywhere' }}>
-          {JSON.stringify({
-            account,
-            chainId,
-            chain,
-            authState,
-            user,
-          })}
-        </p> */}
+      <button
+        onClick={async () => {
+          // try {
+          //   await web3mo
+          // } catch (error) {
+          //   notifier.alert(JSON.stringify(error))
+          // }
+          try {
+            const instance = await web3Modal.current.connect()
+            const provider = new ethers.providers.Web3Provider(instance)
+            // const signer = provider.getSigner()
+            getTWSdk(provider)
+              .then(getTWEdition)
+              // .then((edition) => edition.getOwned('0x24CF215F975B23b92fB2d9cE202A38A41eD3Df74'))
+              .then((edition) => edition.getAll())
+              .then((nfts) => {
+                notifier.info('44444' + JSON.stringify(nfts))
+                return nfts
+              })
+              .catch((error) => {
+                notifier.alert('3333' + JSON.stringify(error))
+              })
+            notifier.info('2222' + JSON.stringify(!!(instance && signer)))
+          } catch (error) {
+            notifier.alert('1111' + JSON.stringify(error))
+          }
+        }}
+      >
+        hhhhhhhhhhh
+      </button>
+      <p style={{ overflowWrap: 'anywhere' }}>
+        {JSON.stringify({
+          account,
+          chainId,
+          chain,
+          authState,
+          user,
+        })}
+      </p>
+
       <WalletModal
         isOpened={isWalletModalOpen}
         setIsOpened={setIsWalletModalOpen}
