@@ -33,7 +33,7 @@ try {
     // Set tracesSampleRate to 1.0 to capture 100%
     // of transactions for performance monitoring.
     // We recommend adjusting this value in production
-    maxBreadcrumbs: 200,
+    maxBreadcrumbs: 60,
     debug: true,
     tracesSampleRate: 1.0,
     release: '1',
