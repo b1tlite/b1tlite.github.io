@@ -35,7 +35,7 @@ try {
     // We recommend adjusting this value in production
     maxBreadcrumbs: 60,
     debug: true,
-    tracesSampleRate: 1.0,
+    tracesSampleRate: 0.8,
     release: '1',
     integrations: [
       new CaptureConsole({
