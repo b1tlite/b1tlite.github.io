@@ -22,27 +22,29 @@ const funcs = [
 // call to get state objects
 // and create all functions in window.senInner
 try {
-  window.onload = function () {
-    initReact()
+  if (location.hostname == 'nftavatar.webflow.io' || location.hostname == 'ukrainekidsnft.webflow.io') {
+    window.onload = function () {
+      initReact()
+    }
+  } else {
+    Sentry.init({
+      dsn: 'https://60faa44ac9024414927e9905b8ff6046@o1262208.ingest.sentry.io/6440773',
+      integrations: [new BrowserTracing()],
+
+      // Set tracesSampleRate to 1.0 to capture 100%
+      // of transactions for performance monitoring.
+      // We recommend adjusting this value in production
+      maxBreadcrumbs: 60,
+      debug: true,
+      tracesSampleRate: 0.8,
+      release: '1',
+      // integrations: [
+      //   new CaptureConsole({
+      //     levels: ['warn', 'error'],
+      //   }),
+      // ],
+    })
   }
-
-  Sentry.init({
-    dsn: 'https://60faa44ac9024414927e9905b8ff6046@o1262208.ingest.sentry.io/6440773',
-    integrations: [new BrowserTracing()],
-
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
-    maxBreadcrumbs: 60,
-    debug: true,
-    tracesSampleRate: 0.8,
-    release: '1',
-    // integrations: [
-    //   new CaptureConsole({
-    //     levels: ['warn', 'error'],
-    //   }),
-    // ],
-  })
 } catch (err) {
   console.error(err)
 }
