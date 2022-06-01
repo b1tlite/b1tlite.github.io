@@ -39,7 +39,7 @@ try {
     release: '1',
     integrations: [
       new CaptureConsole({
-        levels: ['log', 'info', 'warn', 'error', 'debug', 'assert'],
+        levels: ['warn', 'error'],
       }),
     ],
   })
