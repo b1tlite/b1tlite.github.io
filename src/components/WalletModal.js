@@ -1,7 +1,8 @@
-import { Button, Modal, Row } from 'web3uikit'
 import React from 'react'
-const Col = Row.Col
+import { Button, Modal, Row } from 'web3uikit'
 
+import { mobileAndTabletCheck } from '../code/utils'
+const Col = Row.Col
 const CONNECTOR_TYPES = {
   METAMASK: 'metamask',
   WALLETCONNECT: 'walletconnect',
@@ -33,6 +34,7 @@ function getConnectFunction(connectorType, sdkConnect) {
 export function WalletModal({ closeModal, sdkConnect }) {
   const connectWithMetamask = getConnectFunction(CONNECTOR_TYPES.METAMASK, sdkConnect)
   const walletConnect = getConnectFunction(CONNECTOR_TYPES.WALLETCONNECT, sdkConnect)
+  const isMobile = mobileAndTabletCheck()
 
   return (
     <Modal
@@ -54,38 +56,40 @@ export function WalletModal({ closeModal, sdkConnect }) {
           padding: '20px 0 20px 0',
         }}
       >
-        <Col
-          breakpointsConfig={{
-            lg: 8,
-            md: 8,
-            sm: 4,
-            xs: 4,
-          }}
-          span={8}
-        >
-          <div
-            style={{
-              alignItems: 'center',
-              color: 'white',
-              display: 'flex',
-              height: '50px',
-              justifyContent: 'center',
-              width: '100%',
+        {!isMobile && (
+          <Col
+            breakpointsConfig={{
+              lg: 8,
+              md: 8,
+              sm: 4,
+              xs: 4,
             }}
+            span={8}
           >
-            <Button
-              color="blue"
-              onClick={connectWithMetamask}
-              size="large"
-              text="Connect Metamask"
-              theme="translucent"
-              isFullWidth
-              type="button"
-              icon="metamask"
-              iconLayout="trailing"
-            />
-          </div>
-        </Col>
+            <div
+              style={{
+                alignItems: 'center',
+                color: 'white',
+                display: 'flex',
+                height: '50px',
+                justifyContent: 'center',
+                width: '100%',
+              }}
+            >
+              <Button
+                color="blue"
+                onClick={connectWithMetamask}
+                size="large"
+                text="Connect Metamask"
+                theme="translucent"
+                isFullWidth
+                type="button"
+                icon="metamask"
+                iconLayout="trailing"
+              />
+            </div>
+          </Col>
+        )}
 
         <Col
           breakpointsConfig={{
