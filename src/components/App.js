@@ -314,13 +314,13 @@ export function App() {
   useSenReadyEvent(isInitialized)
   return (
     <>
-      <p style={{ overflowWrap: 'anywhere' }}>
+      {/* <p style={{ overflowWrap: 'anywhere' }}>
         {JSON.stringify({
           account,
           chainId,
           chain,
         })}
-      </p>
+      </p> */}
       {/* user, */}
       {/* authState, */}
       {isWalletModalOpen && <WalletModal closeModal={() => setIsWalletModalOpen(false)} sdkConnect={enableWeb3} />}
