@@ -60,7 +60,7 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
         console.log('onAccountsChanged', account)
         if (!account) {
           // account can be null
-          dispatchEvent('onWeb3Deactivated', result)
+          dispatchEvent('onWeb3Deactivated', null)
           notifier.info(`Wallet disconnected`)
         } else {
           dispatchEvent('onAccountChanged', account)

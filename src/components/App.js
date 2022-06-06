@@ -309,12 +309,12 @@ export function App() {
       {/* <p style={{ overflowWrap: 'anywhere' }}>
         {JSON.stringify({
           account,
+          authState,
           chainId,
           chain,
         })}
       </p> */}
       {/* user, */}
-      {/* authState, */}
       {isWalletModalOpen && <WalletModal closeModal={() => setIsWalletModalOpen(false)} sdkConnect={enableWeb3} />}
     </>
   )
