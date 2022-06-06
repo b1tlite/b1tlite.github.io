@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { useChain, useMoralis } from 'react-moralis'
-import { WalletModal } from 'web3uikit'
+import { WalletModal as DefaulModal } from 'web3uikit'
 
 import { useFunctionBinding } from '../hooks/useFunctionBinding'
 import { useMoralisEventsForward } from '../hooks/useMoralisEventsForward'
@@ -12,6 +12,7 @@ import { initialize as initializeForKidsProject } from '../projects/nftKidsProje
 import { mobileAndTabletCheck, toDateTime } from '../code/utils'
 import { useSenReadyEvent } from '../hooks/useSenReadyEvent'
 import { catchWalletOperationErrors } from '../code/catchWalletOperationErrors'
+import { WalletModal } from './WalletModal'
 
 export function App() {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false)
@@ -48,9 +49,11 @@ export function App() {
     hasAuthError,
   }
 
+  const networkId = '0x89'
   const { switchNetwork, chainId, chain } = useChain()
   const notifier = useNotifier()
-  useMoralisEventsForward(Moralis, authState, notifier)
+  const { bindOnWeb3Enabled, bindOnWeb3Deactivated, bindOnAccountChanged, bindOnChainChanged } =
+    useMoralisEventsForward(Moralis, authState, notifier)
 
   async function getProvider(isReadOnly = false) {
     function getWeb3WindowEthereumProvider() {
@@ -71,14 +74,16 @@ export function App() {
       // || getWeb3WindowEthereumProvider()
       // || ethers.getDefaultProvider()
     }
+
     if (isWeb3Enabled) {
       console.log('Getting moralis inner provider')
       const isMobile = mobileAndTabletCheck()
       // notifier.tip('inner ' + isMobile + '   ' + !!web3.getSigner())
+      console.log(web3)
       return isMobile
         ? web3 || getInfuraProvider()
         : new Promise((res, rej) => {
-            switchNetwork('0x89')
+            switchNetwork(networkId)
               .catch(console.error)
               .finally(() => {
                 // notifier.tip('inner4')
@@ -86,10 +91,17 @@ export function App() {
               })
           })
     }
+    return new Promise((res, rej) => {
+      connect()
+      bindOnWeb3Enabled(({ web3 }) => {
+        res(web3)
+      }, true)
+    })
     // notifier.tip('coonect err')
     // connect()
     throw new Error('Connect wallet first!')
   }
+
   const connect = useFunctionBinding(
     'connect',
     () => {
@@ -101,84 +113,42 @@ export function App() {
       if (isWeb3Enabled && isAuthenticated) {
         // notifier.warning('Wallet is already authenticated and connected')
         // throw new Error('Wallet is already authenticated and connected')
-        console.error('Wallet is already authenticated and connected')
+        console.log('Wallet is already authenticated and connected')
       }
       // console.log(isWeb3Enabled, isWeb3EnableLoading, web3EnableError)
-      // console.log('mobileAndTabletCheck', mobileAndTabletCheck())
-      // const isDesktop = !mobileAndTabletCheck()
-      // if (isDesktop) {
+      setIsWalletModalOpen(true)
 
-      // } else {
-      // // for metamask browser
-      const basicArgs = {
-        // chainId: 137,
-
-        signingMessage:
-          "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
-      }
-      // const mobileArgs = {
-      //   chainId: 137,
-      //   signingMessage:
-      //     "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
-      //   provider: 'walletconnect',
-      //   mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
-      // }
-
-      // return authenticate()
-      // setIsWalletModalOpen(true)
-      // window.addEventListener('onWeb3Enabled', () => {
-      //   // setIsWalletModalOpen(false)
-      //   // window.removeEventListener('onWalletAuthenticated', onAuthSucc)
+      // return new Promise((res, rej) => {
+      //   bindOnWeb3Enabled(() => {
+      //     setIsWalletModalOpen(false)
+      //     switchNetwork(networkId).catch(rej).finally(res)
+      //   }, true)
       // })
-
-      const baseOptins = {
-        throwOnError: true,
-      }
-
-      return enableWeb3(baseOptins)
-        .catch(() => {
-          // notifier.info('1')
-          return enableWeb3({
-            ...baseOptins,
-            ...{
-              provider: 'metamask',
-            },
-          })
-        })
-        .catch(() => {
-          // notifier.info('2')
-          return enableWeb3({
-            ...baseOptins,
-            ...{
-              provider: 'walletconnect',
-            },
-          })
-        })
-        .catch(() => {
-          // notifier.info('3')
-          return enableWeb3({
-            ...baseOptins,
-            ...{
-              provider: 'walletConnect',
-            },
-          })
-        })
-        .catch(() => {
-          // notifier.info('4')
-          return enableWeb3({
-            ...baseOptins,
-            ...{
-              provider: 'web3Auth',
-            },
-          })
-        })
-        .catch((err) => {
-          notifier.info('5' + JSON.stringify(err))
-          console.error(err)
-        })
+      bindOnWeb3Enabled(() => {
+        setIsWalletModalOpen(false)
+        switchNetwork(networkId).catch(console.error)
+      }, true)
+      return !(isWeb3EnableLoading || isAuthenticating || (isWeb3Enabled && isAuthenticated))
+      // if (callback) {
+      //   const unsubscribe = bindOnWeb3Enabled(() => {
+      //     console.log('hi i`m here')
+      //     console.log(unsubscribe)
+      //     callback && setTimeout(callback, 0)
+      //     console.log('hi i`m here2')
+      //     unsubscribe()
+      //     console.log('hi i`m here3')
+      //   })
       // }
     },
-    [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
+    [
+      isWeb3Enabled,
+      isWeb3EnableLoading,
+      web3EnableError,
+      bindOnWeb3Enabled,
+      isAuthenticating,
+      isAuthenticated,
+      setIsWalletModalOpen,
+    ]
   )
   useFunctionBinding(
     'disconnect',
@@ -342,26 +312,118 @@ export function App() {
     []
   )
   useSenReadyEvent(isInitialized)
-
   return (
     <>
-      {/* <p style={{ overflowWrap: 'anywhere' }}>
-          {JSON.stringify({
-            account,
-            chainId,
-            chain,
-            authState,
-            user,
-          })}
-        </p> */}
-      <WalletModal
+      <p style={{ overflowWrap: 'anywhere' }}>
+        {JSON.stringify({
+          account,
+          chainId,
+          chain,
+        })}
+      </p>
+      {/* user, */}
+      {/* authState, */}
+      {isWalletModalOpen && <WalletModal closeModal={() => setIsWalletModalOpen(false)} sdkConnect={enableWeb3} />}
+    </>
+  )
+}
+{
+  /* <DefaulModal
         isOpened={isWalletModalOpen}
         setIsOpened={setIsWalletModalOpen}
         moralisAuth={false}
         signingMessage={
           "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!"
         }
-      />
-    </>
-  )
+      /> */
 }
+// const connect = useFunctionBinding(
+//   'connect',
+//   () => {
+//     if (isWeb3EnableLoading || isAuthenticating) {
+//       // notifier.warning('Wallet connection request has been already sent')
+//       // throw new Error('Wallet connection request has been already sent')
+//       console.log('Wallet connection request has been already sent')
+//     }
+//     if (isWeb3Enabled && isAuthenticated) {
+//       // notifier.warning('Wallet is already authenticated and connected')
+//       // throw new Error('Wallet is already authenticated and connected')
+//       console.error('Wallet is already authenticated and connected')
+//     }
+//     // console.log(isWeb3Enabled, isWeb3EnableLoading, web3EnableError)
+//     // console.log('mobileAndTabletCheck', mobileAndTabletCheck())
+//     // const isDesktop = !mobileAndTabletCheck()
+//     // if (isDesktop) {
+
+//     // } else {
+//     // // for metamask browser
+//     const basicArgs = {
+//       // chainId: 137,
+
+//       signingMessage:
+//         "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
+//     }
+//     // const mobileArgs = {
+//     //   chainId: 137,
+//     //   signingMessage:
+//     //     "Hello and welcome to our awesome project. Please sign this message to authenticate. It won't cost you any gas!",
+//     //   provider: 'walletconnect',
+//     //   mobileLinks: ['metamask', 'rainbow', 'argent', 'trust', 'imtoken', 'pillar'],
+//     // }
+
+//     // return authenticate()
+//     // setIsWalletModalOpen(true)
+//     // window.addEventListener('onWeb3Enabled', () => {
+//     //   // setIsWalletModalOpen(false)
+//     //   // window.removeEventListener('onWalletAuthenticated', onAuthSucc)
+//     // })
+
+//     const baseOptins = {
+//       throwOnError: true,
+//     }
+
+//     return enableWeb3(baseOptins)
+//       .catch(() => {
+//         // notifier.info('1')
+//         return enableWeb3({
+//           ...baseOptins,
+//           ...{
+//             provider: 'metamask',
+//           },
+//         })
+//       })
+//       .catch(() => {
+//         // notifier.info('2')
+//         return enableWeb3({
+//           ...baseOptins,
+//           ...{
+//             provider: 'walletconnect',
+//           },
+//         })
+//       })
+//       .catch(() => {
+//         // notifier.info('3')
+//         return enableWeb3({
+//           ...baseOptins,
+//           ...{
+//             provider: 'walletConnect',
+//           },
+//         })
+//       })
+//       .catch(() => {
+//         // notifier.info('4')
+//         return enableWeb3({
+//           ...baseOptins,
+//           ...{
+//             provider: 'web3Auth',
+//           },
+//         })
+//       })
+//       .catch((err) => {
+//         notifier.info('5' + JSON.stringify(err))
+//         console.error(err)
+//       })
+//     // }
+//   },
+//   [isWeb3Enabled, isWeb3EnableLoading, web3EnableError, authenticate]
+// )

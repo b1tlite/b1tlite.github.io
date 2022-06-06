@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { dispatchEvent } from '../code/utils'
 import { usePrevious } from './usePrevious'
 
@@ -81,15 +81,23 @@ export function useMoralisEventsForward(Moralis, authState, notifier) {
       })
     }
   }, [Moralis])
-  // function bindOnEvent(bindFunction) {
-  //   const unsubscribe = bindFunction((...args) => cb && cb.apply(null, args))
-  //   return unsubscribe
-  // }
-  // const bindOnWeb3Enabled = useCallback(bindOnEvent(Moralis.onWeb3Enabled), [Moralis])
-  // const bindOnWeb3Deactivated = useCallback(bindOnEvent(Moralis.onWeb3Deactivated), [Moralis])
-  // const bindOnAccountChanged = useCallback(bindOnEvent(Moralis.onAccountChanged), [Moralis])
-  // const bindOnChainChanged = useCallback(bindOnEvent(Moralis.onChainChanged), [Moralis])
-  // return { bindOnWeb3Enabled, bindOnWeb3Deactivated, bindOnAccountChanged, bindOnChainChanged }
+
+  function bindOnEvent(bindFunction) {
+    return (cb, once = false) => {
+      const unsubscribe = bindFunction((...args) => {
+        once && unsubscribe()
+        return cb && cb.apply(null, args)
+      })
+      return unsubscribe
+    }
+  }
+
+  const bindOnWeb3Enabled = useCallback(bindOnEvent(Moralis.onWeb3Enabled), [Moralis])
+  const bindOnWeb3Deactivated = useCallback(bindOnEvent(Moralis.onWeb3Deactivated), [Moralis])
+  const bindOnAccountChanged = useCallback(bindOnEvent(Moralis.onAccountChanged), [Moralis])
+  const bindOnChainChanged = useCallback(bindOnEvent(Moralis.onChainChanged), [Moralis])
+
+  return { bindOnWeb3Enabled, bindOnWeb3Deactivated, bindOnAccountChanged, bindOnChainChanged }
   // useEffect(() => {
   //   if (web3EnableError) {
   //     console.log('web3EnableError', web3EnableError)
