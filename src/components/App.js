@@ -90,10 +90,10 @@ export function App() {
           })
     }
     return new Promise((res, rej) => {
-      connect()
       bindOnWeb3Enabled(({ web3 }) => {
         res(web3)
       }, true)
+      connect()
     })
   }
   useEffect(() => {
@@ -106,7 +106,7 @@ export function App() {
 
   const connect = useFunctionBinding(
     'connect',
-    () => {
+    async () => {
       if (isWeb3EnableLoading || isAuthenticating) {
         // notifier.warning('Wallet connection request has been already sent')
         // throw new Error('Wallet connection request has been already sent')
