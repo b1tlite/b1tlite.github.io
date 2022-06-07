@@ -23,7 +23,7 @@ function getConnectFunction(connectorType, sdkConnect) {
       options = { ...baseOptins, ...{ provider: CONNECTOR_TYPES.METAMASK } }
       break
     case CONNECTOR_TYPES.WALLETCONNECT:
-      options = { ...baseOptins, ...{ provider: CONNECTOR_TYPES.WALLETCONNECT } }
+      options = { ...baseOptins, ...{ provider: CONNECTOR_TYPES.WALLETCONNECT, mobileLinks: ['metamask'] } }
       break
     default:
       throw new Error('Wrong connector type')

@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { useChain, useMoralis } from 'react-moralis'
-import { WalletModal as DefaulModal } from 'web3uikit'
 
 import { useFunctionBinding } from '../hooks/useFunctionBinding'
 import { useMoralisEventsForward } from '../hooks/useMoralisEventsForward'
