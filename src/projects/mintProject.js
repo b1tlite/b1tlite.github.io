@@ -8,7 +8,7 @@ function setupHtmlForThree() {
 
   // setup main style
   const main = document.querySelector('main')
-  main.style = 'position: absolute; position: absolute; width: 100%; z-index: 10;'
+  main.style = 'position: absolute; position: absolute; width: 100%; z-index: 5;'
 
   // add bg
   const canvas = document.createElement('canvas')
