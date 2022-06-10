@@ -303,17 +303,20 @@ export function App() {
     []
   )
   useSenReadyEvent(isInitialized)
+  const showDebugInfo = location.hostname.match('b1tlite.github.io')
   return (
     <>
-      {/* <p style={{ overflowWrap: 'anywhere' }}>
-        {JSON.stringify({
-          account,
-          authState,
-          chainId,
-          chain,
-        })}
-      </p> */}
-      {/* user, */}
+      {showDebugInfo && (
+        <p style={{ overflowWrap: 'anywhere' }}>
+          {JSON.stringify({
+            account,
+            authState,
+            chainId,
+            chain,
+            user,
+          })}
+        </p>
+      )}
       {isWalletModalOpen && <WalletModal closeModal={() => setIsWalletModalOpen(false)} sdkConnect={enableWeb3} />}
     </>
   )

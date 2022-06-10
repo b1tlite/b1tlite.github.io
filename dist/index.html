@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Demo</title>
-    <script src="https://github.com/WalletConnect/walletconnect-monorepo/releases/download/1.7.8/web3-provider.min.js"></script>
-  </head>
 
-  <body>
-    <main>
-      <div style="display: none">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo</title>
+  <script
+    src="https://github.com/WalletConnect/walletconnect-monorepo/releases/download/1.7.8/web3-provider.min.js"></script>
+</head>
 
-        <button id="connect">connect</button>
-        <button class="open-popup">open-popup</button>
-        <button class="connect-button">connect-button</button>
-        <button class="mint-button">mint-button</button>
-        <button class="loadmorebutton">loadmorebutton</button>
-      </div>
-      <button class="connectwalletbutton"><div class="headerbuttontext">connectwalletbutton</div></button>
+<body>
+  <main>
+    <div style="display: none">
+
+      <button id="connect">connect</button>
+      <button class="open-popup">open-popup</button>
+      <button class="connect-button">connect-button</button>
+      <button class="mint-button">mint-button</button>
+      <button class="loadmorebutton">loadmorebutton</button>
       <p class="items-count"></p>
       <p class="price"></p>
       <div class="nftloader" style="display: flex">nftLoader</div>
@@ -33,15 +33,20 @@
           </div>
         </div>
       </div>
-      <div class="react" id="react"></div>
-      <script src="index.bundle.js"></script>
-    </main>
-    <script>
-      // console.log(sen)
-      // sen.three.runScene()
-      // sen.web3.connect()
-      // sen.initialize('mintSite')
-      sen.initialize()
-    </script>
-  </body>
+    </div>
+    <button class="connectwalletbutton">
+      <div class="headerbuttontext">connect wallet button</div>
+    </button>
+    <div class="react" id="react"></div>
+    <script src="index.bundle.js"></script>
+  </main>
+  <script>
+    // console.log(sen)
+    // sen.three.runScene()
+    // sen.web3.connect()
+    // sen.initialize('mintSite')
+    sen.initialize()
+  </script>
+</body>
+
 </html>
