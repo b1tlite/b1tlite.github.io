@@ -310,9 +310,9 @@ export function App() {
     <>
       {showDebugInfo && (
         <p style={{ overflowWrap: 'anywhere' }}>
-          <a href={metamaskAppDeepLink}>
+          {/* <a href={metamaskAppDeepLink}>
             <button>Connect via deeplink</button>
-          </a>
+          </a> */}
           {JSON.stringify({
             account,
             authState,
