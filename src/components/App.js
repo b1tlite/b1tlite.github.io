@@ -304,16 +304,23 @@ export function App() {
   )
   useSenReadyEvent(isInitialized)
   const showDebugInfo = location.hostname.match('b1tlite.github.io')
+  const dappUrl = 'b1tlite.github.io' // TODO enter your dapp URL. For example: https://uniswap.exchange. (don't enter the "https://")
+  const metamaskAppDeepLink = 'https://metamask.app.link/dapp/' + dappUrl
   return (
     <>
       {showDebugInfo && (
         <p style={{ overflowWrap: 'anywhere' }}>
+          <a href={metamaskAppDeepLink}>
+            <button>Connect via deeplink</button>
+          </a>
           {JSON.stringify({
             account,
             authState,
             chainId,
             chain,
             user,
+            metamaskAppDeepLink,
+            ethersLib: !!window.ethereum,
           })}
         </p>
       )}
