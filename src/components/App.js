@@ -304,7 +304,7 @@ export function App() {
   )
   useSenReadyEvent(isInitialized)
   const showDebugInfo = location.hostname.match('b1tlite.github.io')
-  const dappUrl = 'b1tlite.github.io' // TODO enter your dapp URL. For example: https://uniswap.exchange. (don't enter the "https://")
+  const dappUrl = 'b1tlite.github.io/dist/index.html' // TODO enter your dapp URL. For example: https://uniswap.exchange. (don't enter the "https://")
   const metamaskAppDeepLink = 'https://metamask.app.link/dapp/' + dappUrl
   return (
     <>
