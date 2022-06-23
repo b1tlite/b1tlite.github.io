@@ -1,20 +1,27 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { useChain, useMoralis } from 'react-moralis'
+import { PaperCheckout } from '@paperxyz/react-client-sdk'
 
 import { useFunctionBinding } from '../hooks/useFunctionBinding'
 import { useMoralisEventsForward } from '../hooks/useMoralisEventsForward'
 import { useNotifier } from '../hooks/useNotifier'
 
+import { WalletModal } from './WalletModal'
 import { getTWSdk, getTWMarketplace, getTWNFTDrop, getTWEdition } from '../code/thirdWebUtils'
 import { initialize as initializeForMintProject } from '../projects/mintProject'
 import { initialize as initializeForKidsProject } from '../projects/nftKidsProject'
+import { initialize as initializeForKidsProjectNew } from '../projects/nftKidsProjectNew'
 import { mobileAndTabletCheck, toDateTime } from '../code/utils'
 import { useSenReadyEvent } from '../hooks/useSenReadyEvent'
 import { catchWalletOperationErrors } from '../code/catchWalletOperationErrors'
-import { WalletModal } from './WalletModal'
+
+const defaulProject = 'nftKids'
 
 export function App() {
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false)
+  const [isPaperActive, setIsPaperActive] = useState(false)
+  const [project, setProject] = useState(defaulProject)
+  const [paperCheckoutId, setPaperCheckoutId] = useState('')
   const {
     // lib
     Moralis,
@@ -287,14 +294,30 @@ export function App() {
     [getProvider]
   )
   useFunctionBinding(
+    'buyPaperNft',
+    (paperCheckoutId) => {
+      setPaperCheckoutId(paperCheckoutId)
+      setIsPaperActive(true)
+    },
+    [getProvider]
+  )
+  useFunctionBinding(
     'initialize',
-    (project = 'nftKids') => {
-      switch (project) {
+    (project = defaulProject) => {
+      const path = project.split('/')
+      switch (path[0]) {
         case 'nftKids':
+          setProject(project)
           initializeForKidsProject()
           break
         case 'mintSite':
+          setProject(project)
           initializeForMintProject()
+          break
+        case 'nftKidsNew':
+          const page = path[1]
+          setProject(project)
+          initializeForKidsProjectNew(page)
           break
         default:
           throw new Error('Wrong project name')
@@ -325,6 +348,22 @@ export function App() {
         </p>
       )}
       {isWalletModalOpen && <WalletModal closeModal={() => setIsWalletModalOpen(false)} sdkConnect={enableWeb3} />}
+
+      {isPaperActive && (
+        <PaperCheckout
+          checkoutId={paperCheckoutId}
+          display="DRAWER"
+          options={{
+            width: 400,
+            height: 800,
+            colorBackground: '#232323',
+            colorPrimary: '#42ff4f',
+            colorText: '#f1fde3',
+            borderRadius: 6,
+            fontFamily: 'Open Sans',
+          }}
+        />
+      )}
     </>
   )
 }

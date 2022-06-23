@@ -27,6 +27,7 @@
     "webpack-dev-server": "^4.9.0"
   },
   "dependencies": {
+    "@paperxyz/react-client-sdk": "^0.0.18",
     "@sentry/browser": "^6.19.7",
     "@sentry/integrations": "^6.19.7",
     "@sentry/tracing": "^6.19.7",

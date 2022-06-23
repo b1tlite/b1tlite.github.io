@@ -17,6 +17,7 @@ const sen = {
     // }
 
     buyNft, // Promise (int/string: listingId <nft.id>, int: countNftsToBuy <from quantity> ) => null (only after wallet is connected)
+    buyPaperNft, // Promise (string: paperCheckoutId) => null 
     getEditionNftsOwnedByUser, // Promise => [editiontNft] returns nfts owned by user in our collection
     getCurrentUserAddress, // returns current user account address
     getCurrentUserChain, // returns chainId
