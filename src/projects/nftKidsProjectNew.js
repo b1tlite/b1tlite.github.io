@@ -24,11 +24,12 @@ function bindOnMoreButtons() {
   return getUploads()
     .then((uploads) => {
       console.log('Got uploads', uploads)
-      return uploads
+      return uploads || []
     })
     .then((uploads) =>
-      uploads.uploads.filter(
+      uploads.filter(
         (upload) =>
+          upload &&
           !upload.isSoldOut &&
           upload.isMinted &&
           upload.isListed &&
@@ -38,9 +39,13 @@ function bindOnMoreButtons() {
       )
     )
     .then((uploads) => {
+      console.log('Filter uploads', uploads)
+      return uploads
+    })
+    .then((uploads) => {
       if (!uploads || !uploads.length) {
-        console.error('No uploads')
-        return
+        console.log('No uploads')
+        return 
       }
       const moreButtons = document.querySelectorAll('.collection-item .collection-item-details a.sticker')
       let counter = 0
