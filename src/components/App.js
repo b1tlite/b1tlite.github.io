@@ -353,10 +353,7 @@ export function App() {
       {isWalletModalOpen && <WalletModal closeModal={() => setIsWalletModalOpen(false)} sdkConnect={enableWeb3} />}
 
       {isPaperActive && (
-        <div
-          id="paper-conatiner"
-          style={{ display: 'none', overflow: 'hidden', width: 0, height: 0, visibility: 'hidden' }}
-        >
+        <div id="paper-container" style={{ overflow: 'hidden', width: 0, height: 0, visibility: 'hidden' }}>
           <PaperCheckout
             checkoutId={paperCheckoutId}
             display="DRAWER"
