@@ -299,7 +299,7 @@ export function App() {
       setPaperCheckoutId(paperCheckoutId)
       setIsPaperActive(true)
       setTimeout(() => {
-        document.querySelector('#paper-conatiner>a').click()
+        document.querySelector('#paper-container>a').click()
       }, 0)
     },
     [getProvider]
