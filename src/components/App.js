@@ -298,6 +298,9 @@ export function App() {
     (paperCheckoutId) => {
       setPaperCheckoutId(paperCheckoutId)
       setIsPaperActive(true)
+      setTimeout(() => {
+        document.querySelector('#paper-conatiner>a').click()
+      }, 0)
     },
     [getProvider]
   )
@@ -350,19 +353,24 @@ export function App() {
       {isWalletModalOpen && <WalletModal closeModal={() => setIsWalletModalOpen(false)} sdkConnect={enableWeb3} />}
 
       {isPaperActive && (
-        <PaperCheckout
-          checkoutId={paperCheckoutId}
-          display="DRAWER"
-          options={{
-            width: 400,
-            height: 800,
-            colorBackground: '#232323',
-            colorPrimary: '#42ff4f',
-            colorText: '#f1fde3',
-            borderRadius: 6,
-            fontFamily: 'Open Sans',
-          }}
-        />
+        <div
+          id="paper-conatiner"
+          style={{ display: 'none', overflow: 'hidden', width: 0, height: 0, visibility: 'hidden' }}
+        >
+          <PaperCheckout
+            checkoutId={paperCheckoutId}
+            display="DRAWER"
+            options={{
+              width: 400,
+              height: 800,
+              colorBackground: '#232323',
+              colorPrimary: '#42ff4f',
+              colorText: '#f1fde3',
+              borderRadius: 6,
+              fontFamily: 'Open Sans',
+            }}
+          />
+        </div>
       )}
     </>
   )
