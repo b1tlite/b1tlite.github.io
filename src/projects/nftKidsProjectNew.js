@@ -51,7 +51,7 @@ function bindOnMoreButtons() {
       let counter = 0
       console.log('Got moreButtons', moreButtons)
       moreButtons.forEach((button) => {
-        const upload = uploads[counter % moreButtons.length]
+        const upload = uploads[moreButtons.length % counter]
         counter++
         if (!upload) {
           console.log('Strange error', upload)
