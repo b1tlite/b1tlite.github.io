@@ -8,6 +8,7 @@ const funcs = [
   'disconnect',
   'getMarketListings',
   'buyNft',
+  'buyPaperNft',
   'getEditionNftsOwnedByUser',
   'getCurrentUserAddress',
   'getCurrentUserChain',

@@ -60,7 +60,7 @@ function bindOnMoreButtons() {
         console.log('checkId bind', upload.paperInfo.checkoutId)
         button.addEventListener('click', () => {
           console.log('checkId click', upload.paperInfo.checkoutId)
-          window.sen.buyPaperNft(upload.paperInfo.checkoutId)
+          window.sen.web3.buyPaperNft(upload.paperInfo.checkoutId)
         })
       })
     })
