@@ -9,15 +9,28 @@ function bindActions(page) {
   console.log('Page', page)
   switch (page) {
     case 'nft-collection':
-      bindOnMoreButtons()
+      // bindOnMoreButtons()
       break
     case 'home':
-      bindOnMoreButtons()
+      // bindOnMoreButtons()
+      break
+    case 'nft-item':
+      bindBuyButton()
       break
     default:
       console.log('wrong page', page)
       break
   }
+}
+function bindBuyButton() {
+  const buyBtn = document.querySelector('.buy-now-button')
+  const href = buyBtn.getAttribute('href')
+  buyBtn.removeAttribute('href')
+  const checkoutId = href.split('//').pop()
+  buyBtn.addEventListener('click', () => {
+    console.log('checkId click', checkoutId)
+    window.sen.web3.buyPaperNft(checkoutId)
+  })
 }
 
 function bindOnMoreButtons() {
@@ -45,7 +58,7 @@ function bindOnMoreButtons() {
     .then((uploads) => {
       if (!uploads || !uploads.length) {
         console.log('No uploads')
-        return 
+        return
       }
       const moreButtons = document.querySelectorAll('.collection-item .collection-item-details a.sticker')
       let counter = 0
